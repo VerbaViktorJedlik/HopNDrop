@@ -18,6 +18,8 @@ export class PackageController {
       }
 
       const { toUId, fromPId, toPId, price } = req.body;
+      console.log(req.body);
+
       if (!toUId || !fromPId || !toPId || !price) {
         res.status(400).json({ result: "Error", msg: "Missing fields" });
         return;

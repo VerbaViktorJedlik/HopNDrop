@@ -26,7 +26,9 @@ import { PackageService } from "~/services/package.service";
 import { Link } from "react-router";
 import { MoveLeft } from "lucide-react";
 import { PointsService } from "~/services/points.service";
-import { PublicPPP } from "@common";
+import { PublicPPP, PublicUser } from "@common";
+import { Label } from "~/components/ui/label";
+import { UserService } from "~/services/user.service";
 
 const formSchema = z.object({
   from: z.string().min(2, {
@@ -39,6 +41,9 @@ const formSchema = z.object({
 });
 function send() {
   const [points, setPoints] = useState<PublicPPP[] | null>(null);
+  const [users, setUsers] = useState<PublicUser[] | null>(null);
+  const [search, setSearch] = useState<string>("");
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   useEffect(() => {
     const getPoints = async () => {
       const points2 = await PointsService.GetAllPoints();
@@ -57,13 +62,21 @@ function send() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
-    const send = await PackageService.AddPackage(
-      values.to,
-      values.from,
-      values.to,
-      Number(values.price)
-    );
+    if (selectedUserId) {
+      const send = await PackageService.AddPackage(
+        selectedUserId,
+        values.from,
+        values.to,
+        Number(values.price)
+      );
+    }
+    form.reset();
   };
+
+  async function handleOnClick() {
+    const users = await UserService.getUsersByName(search);
+    setUsers(users);
+  }
 
   return (
     <div>
@@ -81,10 +94,36 @@ function send() {
             <CardTitle>Küldemény Feladása</CardTitle>
           </CardHeader>
           <CardContent>
+            <div className="flex flex-col gap-2 mb-3">
+              <Label>Felhasználó keresés</Label>
+              <Input
+                onChange={(e) => setSearch(e.target.value)}
+                value={search}
+                type="text"
+                placeholder="felhasználó név"
+              ></Input>
+              <Button onClick={handleOnClick}>Felhasználó keresés</Button>
+            </div>
+            <Label>Kinek?</Label>
+            <Select
+              onValueChange={(val) => setSelectedUserId(val)}
+              value={selectedUserId || ""}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Válassz egy felhasználót" />
+              </SelectTrigger>
+              <SelectContent>
+                {users?.map((user) => (
+                  <SelectItem key={user.id} value={user.id}>
+                    {user.username}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
+                className="space-y-8 mt-3"
               >
                 <FormField
                   control={form.control}
