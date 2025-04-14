@@ -23,5 +23,7 @@ router.get("/points/:location", PointController.getAllPPP);
 router.get("/points/", PointController.getAllPPP);
 
 router.get("/users/:username", UserController.getUserByName);
+router.get("/user", UserController.getSelf);
+router.get("/user/:id", UserController.getById);
 
 export default router;

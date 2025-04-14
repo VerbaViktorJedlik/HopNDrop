@@ -101,7 +101,7 @@ export function register() {
                     <FormItem>
                       <FormLabel>Felhasználónév</FormLabel>
                       <FormControl>
-                        <Input placeholder="your name" {...field} />
+                        <Input placeholder="gipsz_jakab" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -116,7 +116,7 @@ export function register() {
                       <FormControl>
                         <Input
                           type="password"
-                          placeholder="your password"
+                          placeholder="gipszjakab123"
                           {...field}
                         />
                       </FormControl>
@@ -133,7 +133,7 @@ export function register() {
                       <FormControl>
                         <Input
                           type="password"
-                          placeholder="your password again"
+                          placeholder="gipszjakab123"
                           {...field}
                         />
                       </FormControl>

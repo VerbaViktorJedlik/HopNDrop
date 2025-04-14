@@ -21,6 +21,28 @@ export class PackageService {
       return null;
     }
   }
+  static async GetAllUserPackages(id: string): Promise<PublicPackage[] | null> {
+    try {
+      const response = await fetch(
+        `${ConfigService.apiUrl}/user/${id}/package`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: ConfigService.getToken()!,
+          },
+        }
+      );
+      const result: FindPackageResponse = await response.json();
+      if (result.result == "Success") {
+        return result.packages;
+      }
+      return null;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 
   static async GetPackageById(id: string): Promise<PublicPackage | null> {
     try {
