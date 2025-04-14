@@ -7,5 +7,8 @@ export const router = express.Router()
 router.post('/auth/login', AuthController.login)
 router.post('/auth/register', AuthController.register)
 router.post("/package/:id/take", PackageController.take)
+router.post("/package/:id/recieve", PackageController.recieve)
+router.post("/package/:id/deliver", PackageController.deliver)
+
 
 export default router
