@@ -14,6 +14,13 @@ enum PkgStatus {
   Completed
 }
 
+enum PkgSize {
+  S
+  M
+  L
+  B
+}
+
 model Package {
   id          String      @id @default(uuid())
   fromP       PickUpPoint @relation("fromP", fields: [fromPId], references: [id])
@@ -28,6 +35,8 @@ model Package {
   deliveryUId String?
   price       Float
   reward      Float
+  weight      Float @default(75)
+  size        PkgSize @default(L)
   status      PkgStatus   @default(Waiting)
 }
 
