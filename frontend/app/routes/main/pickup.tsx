@@ -7,16 +7,6 @@ import { Button } from "~/components/ui/button";
 import { Link } from "react-router";
 import { PackageService } from "~/services/package.service";
 
-const packagePoint: PublicPPP = {
-  id: "asd",
-  location: "location",
-};
-
-const user: PublicUser = {
-  id: "userName",
-  username: "userName",
-};
-
 const packages: PublicPackage[] | null = await PackageService.GetAllPackages();
 
 function pickup() {

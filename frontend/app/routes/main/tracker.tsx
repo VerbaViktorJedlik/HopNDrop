@@ -21,9 +21,7 @@ import { PublicPackage } from "@common";
 import { PackageService } from "~/services/package.service";
 
 const formSchema = z.object({
-  packageId: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  packageId: z.string()
 });
 
 function tracker() {
