@@ -48,5 +48,5 @@ export type NewPackageBody = {
   price: number,
 }
 
-export type CreatePackageResponse = (PublicPackage & {result: "Success"}) | {result: "Error", msg: string}
+export type PackageResponse = (PublicPackage & {result: "Success"}) | {result: "Error", msg: string}
 export type FindPackageResponse = (PublicPackage[] & {result: "Success"}) | {result: "Error", msg: string}
