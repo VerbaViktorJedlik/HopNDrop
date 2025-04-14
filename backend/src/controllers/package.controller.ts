@@ -1,23 +1,74 @@
 import { Request, Response } from "express";
-import { findPackage, updatePackage } from "../db/package";
-import { Package } from "@prisma/client";
+import { createPackage, findPackage, updatePackage } from "../db/package";
 import { FindPackageResponse, PackageResponse } from "@common";
 import { AuthController } from "./auth.controller";
 import { findUser, updateUser } from "../db/user";
 
 export class PackageController {
+  static async create(
+    req: Request,
+    res: Response<PackageResponse>
+  ): Promise<void> {
+    try {
+      const reqUser = await AuthController.validateUser(req);
 
-    static async take(req: Request<{id:string}>, res: Response<PackageResponse>) {
+      if (!reqUser) {
+        res.status(403);
+        return;
+      }
+
+      const { toUId, fromPId, toPId, price } = req.body;
+      console.log(req.body);
+
+      if (!toUId || !fromPId || !toPId || !price) {
+        res.status(400).json({ result: "Error", msg: "Missing fields" });
+        return;
+      }
+
+      const createdPackage = await createPackage(
+        reqUser.id,
+        toUId,
+        fromPId,
+        toPId,
+        price,
+        400
+      );
+
+      if (!createdPackage) {
+        res
+          .status(500)
+          .json({ result: "Error", msg: "Failed to create package." });
+        return;
+      }
+      res.json({ result: "Success", package: createdPackage });
+      return;
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({ result: "Error", msg: "Server error" });
+      return;
+    }
+  }
+
+  static async take(
+    req: Request<{ id: string }>,
+    res: Response<PackageResponse>
+  ) {
     let user = await AuthController.validateUser(req);
     if(!user){
         res.status(403).json({result: "Error", msg: "Need to log in to access this function."})
         return;
     }
+
     let pkgs = await findPackage(req.params.id);
-    if(!pkgs || pkgs.length == 0){
-        res.status(404).json({ result: "Error", msg: "Nem létezik csomag ilyen azonosítóval."});
-        return;
+    if (pkgs == null) {
+      res.status(404).json({
+        result: "Error",
+        msg: "Nem létezik csomag ilyen azonosítóval.",
+      });
+      return;
     }
+    
     let pkg = pkgs[0];
     let users = await findUser(user.id);
     if(!users || users.length == 0){
@@ -27,9 +78,11 @@ export class PackageController {
     let deliveryUser = users[0];
 
 
-    if(pkg.status != "Waiting" ){
-        res.status(400).json({result: "Error", msg: "Nem megfelelő a csomag státusza."});
-        return;
+    if (pkg.status != "Waiting") {
+      res
+        .status(400)
+        .json({ result: "Error", msg: "Nem megfelelő a csomag státusza." });
+      return;
     }
     pkg.status = "EnRoute"
     pkg.deliveryUId = deliveryUser.id;
@@ -39,12 +92,15 @@ export class PackageController {
     const updatedPkg = await updatePackage({id: pkg.id, deliveryUId: deliveryUser.id, status: "EnRoute"});
 
     if (!updatedPkg) {
-        res.status(400).json({result: "Error", msg: "Nem sikerült frissíteni a csomag státuszát."});
-        return;
+      res.status(400).json({
+        result: "Error",
+        msg: "Nem sikerült frissíteni a csomag státuszát.",
+      });
+      return;
     }
 
-    res.status(200).json({result: "Success", package: updatedPkg});
-}
+    res.status(200).json({ result: "Success", package: updatedPkg });
+  }
 
 static async deliver(req: Request<{id:string}>, res: Response<PackageResponse>) {
     let user = await AuthController.validateUser(req);
@@ -80,8 +136,11 @@ static async deliver(req: Request<{id:string}>, res: Response<PackageResponse>) 
 
 
     if (!updatedPkg) {
-        res.status(400).json({result: "Error", msg: "Nem sikerült frissíteni a csomag státuszát."});
-        return;
+      res.status(400).json({
+        result: "Error",
+        msg: "Nem sikerült frissíteni a csomag státuszát.",
+      });
+      return;
     }
     
     res.status(200).json({result: "Success", package: updatedPkg});
@@ -127,29 +186,73 @@ static async recieve(req: Request<{id:string}>, res: Response<PackageResponse>) 
     const updatedPkg = await updatePackage({id: pkg.id, status: "Completed"});
 
     if (!updatedPkg) {
-        res.status(400).json({result: "Error", msg: "Nem sikerült frissíteni a csomag státuszát."});
-        return;
+      res.status(400).json({
+        result: "Error",
+        msg: "Nem sikerült frissíteni a csomag státuszát.",
+      });
+      return;
     }
-    
-    res.status(200).json({result: "Success", package: updatedPkg});
-}
 
-static async getPkg(req: Request<{id:string}>, res: Response<PackageResponse>) {
+    res.status(200).json({ result: "Success", package: updatedPkg });
+  }
+
+  static async getPkg(
+    req: Request<{ id: string }>,
+    res: Response<PackageResponse>
+  ) {
     let pkgs = await findPackage(req.params.id);
     if(!pkgs || !pkgs.length){
         res.status(404).json({ result: "Error", msg: "Nem létezik csomag ilyen azonosítóval."});
         return;
     }
     let pkg = pkgs[0];
-    res.status(200).json({result: "Success", package: pkg});
-}
-static async getAllPkg(req: Request, res: Response<FindPackageResponse>) {
+    res.status(200).json({ result: "Success", package: pkg });
+  }
+
+  static async getAllPkg(req: Request, res: Response<FindPackageResponse>) {
     let pkgs = await findPackage();
     if(pkgs == null){
         res.status(404).json({ result: "Error", msg: "Nem létezik egy csomag se."});
         return;
     }
-    res.status(200).json({result: "Success", packages: pkgs});
-}
+    res.status(200).json({ result: "Success", packages: pkgs });
+  }
 
+  static async getAvailablePkgs(
+    req: Request,
+    res: Response<FindPackageResponse>
+  ) {
+    let pkgs = await findPackage();
+    if (!pkgs || !pkgs.length) {
+      res.status(404).json({
+        result: "Error",
+        msg: "Nem létezik csomag ilyen azonosítóval.",
+      });
+      return;
+    }
+    res.status(200).json({
+      result: "Success",
+      packages: pkgs.filter((p) => !p.deliveryUId),
+    });
+  }
+
+  static async getAllUserPkg(
+    req: Request<{ id: string }>,
+    res: Response<FindPackageResponse>
+  ) {
+    try {
+      let pkgs = await findPackage();
+
+      pkgs = pkgs!.filter(
+        (p) =>
+          p.deliveryUId == req.params.id ||
+          p.fromUId == req.params.id ||
+          p.toUId == req.params.id
+      );
+
+      res.status(200).json({ result: "Success", packages: pkgs });
+    } catch (error) {
+      res.status(500);
+    }
+  }
 }
