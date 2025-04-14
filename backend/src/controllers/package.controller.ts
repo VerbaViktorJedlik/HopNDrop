@@ -50,7 +50,7 @@ static async deliver(req: Request<{id:string}>, res: Response<PackageResponse>) 
     
     res.status(200).json({result: "Success", ...updatedPkg});
 }
-static async recive(req: Request<{id:string}>, res: Response<PackageResponse>) {
+static async recieve(req: Request<{id:string}>, res: Response<PackageResponse>) {
     let pkgs = await findPackage(req.params.id);
     if(pkgs == null){
         res.status(404).json({ result: "Error", msg: "Nem létezik csomag ilyen azonosítóval."});
