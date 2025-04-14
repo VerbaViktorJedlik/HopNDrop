@@ -1,4 +1,4 @@
-import { Package } from "@prisma/client";
+import { Package, PkgSize } from "@prisma/client";
 import { prisma } from "../main";
 
 /**
@@ -37,7 +37,9 @@ export async function createPackage(
   fromPId: string,
   toPId: string,
   price: number,
-  reward: number
+  reward: number,
+  weight?: number,
+  size?: PkgSize
 ) {
   try {
     const pkg = await prisma.package.create({
@@ -48,6 +50,8 @@ export async function createPackage(
         toPId,
         price,
         reward,
+        weight,
+        size,
       },
       include: {
         fromU: true,
