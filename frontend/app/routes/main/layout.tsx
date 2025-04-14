@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
+import { AuthService } from "~/services/auth.service";
 
 const login = () => {
   return true;
@@ -8,9 +9,15 @@ const login = () => {
 function layout() {
   const navigate = useNavigate();
   useEffect(() => {
-    if (!login()) {
-      navigate("/login");
+    async function checkToken() {
+      // if (await AuthService.verifyToken()) {
+      //   navigate("/login");
+      // }
+      if (false) {
+        navigate("/login");
+      }
     }
+    checkToken();
   }, [navigate]);
   return (
     <div>
