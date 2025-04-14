@@ -60,6 +60,7 @@ export function PostageTable() {
           <TableHead>Státusz</TableHead>
           <TableHead>Ár</TableHead>
           <TableHead>Juttatás</TableHead>
+          <TableHead className="text-right">Művelet</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -76,6 +77,7 @@ export function PostageTable() {
               <TableCell>{postage.status}</TableCell>
               <TableCell>{postage.price.toString()}</TableCell>
               <TableCell>{postage.reward.toString()}</TableCell>
+
               {postage.status === "EnRoute" && (
                 <TableCell>
                   <Button onClick={() => handleDelivered(postage.id)}>
