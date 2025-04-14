@@ -5,7 +5,7 @@ import { PackageResponse } from "@common";
 
 export class PackageController {
 
-    static async take(req: Request<{id:string}>, res: Response<PackageResponse>) {
+  static async take(req: Request<{id:string}>, res: Response<PackageResponse>) {
     let pkg : Package[] | null = await findPackage(req.params.id);
     if(pkg == null){
         res.status(404).json({ result: "Error", msg: "Nem létezik csomag ilyen azonosítóval."});
@@ -13,5 +13,9 @@ export class PackageController {
     if(pkg![0].status != "Waiting" ){
         res.status(400).json({result: "Error", msg: "Nem megfelelő a csomag státusza."});
     }
-}
+  }
+
+  static async find(req: Request<{id:string}>, res: Response<PackageResponse>) {
+    
+  }
 }

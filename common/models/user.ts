@@ -5,8 +5,9 @@ export type PublicUser = {
 
 export type PublicSelf = PublicUser & {
     balance: Number,
-}
-
-export type AuthResponse = PublicSelf & {
     jwt: string
 }
+
+export type AuthResponse = (PublicSelf & {
+    result: "Success"
+}) | {result: "Error", msg: string}
