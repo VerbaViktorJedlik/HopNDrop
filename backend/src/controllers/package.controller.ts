@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { createPackage, findPackage, updatePackage } from "../db/package";
 import { FindPackageResponse, PackageResponse } from "@common";
 import { AuthController } from "./auth.controller";
-import { findUserById } from "../db/user";
+import { findUser, updateUser } from "../db/user";
 
 export class PackageController {
   static async create(
@@ -54,6 +54,12 @@ export class PackageController {
     req: Request<{ id: string }>,
     res: Response<PackageResponse>
   ) {
+    let user = await AuthController.validateUser(req);
+    if(!user){
+        res.status(403).json({result: "Error", msg: "Need to log in to access this function."})
+        return;
+    }
+
     let pkgs = await findPackage(req.params.id);
     if (pkgs == null) {
       res.status(404).json({
@@ -62,7 +68,15 @@ export class PackageController {
       });
       return;
     }
+    
     let pkg = pkgs[0];
+    let users = await findUser(user.id);
+    if(!users || users.length == 0){
+        res.status(404).json({ result: "Error", msg: "Nem létezik user ilyen azonosítóval."});
+        return;
+    }
+    let deliveryUser = users[0];
+
 
     if (pkg.status != "Waiting") {
       res
@@ -70,8 +84,12 @@ export class PackageController {
         .json({ result: "Error", msg: "Nem megfelelő a csomag státusza." });
       return;
     }
-    pkg.status = "EnRoute";
-    const updatedPkg = await updatePackage(pkg);
+    pkg.status = "EnRoute"
+    pkg.deliveryUId = deliveryUser.id;
+    deliveryUser.balance -= pkg.price;
+    let updatedDeliveryUser = await updateUser(deliveryUser);
+
+    const updatedPkg = await updatePackage({id: pkg.id, deliveryUId: deliveryUser.id, status: "EnRoute"});
 
     if (!updatedPkg) {
       res.status(400).json({
@@ -84,28 +102,38 @@ export class PackageController {
     res.status(200).json({ result: "Success", package: updatedPkg });
   }
 
-  static async deliver(
-    req: Request<{ id: string }>,
-    res: Response<PackageResponse>
-  ) {
+static async deliver(req: Request<{id:string}>, res: Response<PackageResponse>) {
+    let user = await AuthController.validateUser(req);
+    if(!user){
+        res.status(403).json({result: "Error", msg: "Need to log in to access this function."})
+        return;
+    }
     let pkgs = await findPackage(req.params.id);
-    if (pkgs == null) {
-      res.status(404).json({
-        result: "Error",
-        msg: "Nem létezik csomag ilyen azonosítóval.",
-      });
-      return;
+    if(!pkgs || pkgs.length == 0){
+        res.status(404).json({ result: "Error", msg: "Nem létezik csomag ilyen azonosítóval."});
+        return;
     }
     let pkg = pkgs[0];
 
-    if (pkg.status != "EnRoute") {
-      res
-        .status(400)
-        .json({ result: "Error", msg: "Nem megfelelő a csomag státusza." });
-      return;
+    let users = await findUser(user.id);
+    if(!users || users.length == 0){
+        res.status(404).json({ result: "Error", msg: "Nem létezik user ilyen azonosítóval."});
+        return;
     }
-    pkg.status = "Delivered";
-    const updatedPkg = await updatePackage(pkg);
+    let deliveryUser = users[0];
+
+
+    if(pkg.status != "EnRoute" ){
+        res.status(400).json({result: "Error", msg: "Nem megfelelő a csomag státusza."});
+        return;
+    }
+    pkg.status = "Delivered"
+    pkg.deliveryUId = deliveryUser.id;
+    deliveryUser.balance += pkg.price;
+    deliveryUser.balance += pkg.reward;
+    let updatedDeliveryUser = await updateUser(deliveryUser);
+    const updatedPkg = await updatePackage({id: pkg.id, status: "Delivered"});
+
 
     if (!updatedPkg) {
       res.status(400).json({
@@ -114,31 +142,48 @@ export class PackageController {
       });
       return;
     }
+    
+    res.status(200).json({result: "Success", package: updatedPkg});
+}
+static async recieve(req: Request<{id:string}>, res: Response<PackageResponse>) {
+    let user = await AuthController.validateUser(req);
+    if(!user){
+        res.status(403).json({result: "Error", msg: "Need to log in to access this function."})
+        return;
+    }
 
-    res.status(200).json({ result: "Success", package: updatedPkg });
-  }
-  static async recieve(
-    req: Request<{ id: string }>,
-    res: Response<PackageResponse>
-  ) {
     let pkgs = await findPackage(req.params.id);
-    if (pkgs == null) {
-      res.status(404).json({
-        result: "Error",
-        msg: "Nem létezik csomag ilyen azonosítóval.",
-      });
-      return;
+    if(!pkgs || pkgs.length == 0){
+        res.status(404).json({ result: "Error", msg: "Nem létezik csomag ilyen azonosítóval."});
+        return;
     }
     let pkg = pkgs[0];
 
-    if (pkg.status != "Delivered") {
-      res
-        .status(400)
-        .json({ result: "Error", msg: "Nem megfelelő a csomag státusza." });
-      return;
+    let users = await findUser(pkg.toUId);
+    if(!users || users.length == 0){
+        res.status(404).json({ result: "Error", msg: "Nem létezik user ilyen azonosítóval."});
+        return;
     }
-    pkg.status = "Completed";
-    const updatedPkg = await updatePackage(pkg);
+    let toUser = users[0];
+    users = null;
+    users = await findUser(pkg.fromUId);
+    if(!users || users.length == 0){
+        res.status(404).json({ result: "Error", msg: "Nem létezik user ilyen azonosítóval."});
+        return;
+    }
+    let fromUser = users[0];
+
+    if(pkg.status != "Delivered" ){
+        res.status(400).json({result: "Error", msg: "Nem megfelelő a csomag státusza."});
+        return;
+    }
+    pkg.status = "Completed"
+    toUser.balance -= pkg.price;
+    fromUser.balance += pkg.price;
+    let updatedToUser = await updateUser(toUser);
+    let updatedFromUser = await updateUser(fromUser);
+
+    const updatedPkg = await updatePackage({id: pkg.id, status: "Completed"});
 
     if (!updatedPkg) {
       res.status(400).json({
@@ -156,12 +201,9 @@ export class PackageController {
     res: Response<PackageResponse>
   ) {
     let pkgs = await findPackage(req.params.id);
-    if (!pkgs || !pkgs.length) {
-      res.status(404).json({
-        result: "Error",
-        msg: "Nem létezik csomag ilyen azonosítóval.",
-      });
-      return;
+    if(!pkgs || !pkgs.length){
+        res.status(404).json({ result: "Error", msg: "Nem létezik csomag ilyen azonosítóval."});
+        return;
     }
     let pkg = pkgs[0];
     res.status(200).json({ result: "Success", package: pkg });
@@ -169,12 +211,9 @@ export class PackageController {
 
   static async getAllPkg(req: Request, res: Response<FindPackageResponse>) {
     let pkgs = await findPackage();
-    if (!pkgs || !pkgs.length) {
-      res.status(404).json({
-        result: "Error",
-        msg: "Nem létezik csomag ilyen azonosítóval.",
-      });
-      return;
+    if(pkgs == null){
+        res.status(404).json({ result: "Error", msg: "Nem létezik egy csomag se."});
+        return;
     }
     res.status(200).json({ result: "Success", packages: pkgs });
   }

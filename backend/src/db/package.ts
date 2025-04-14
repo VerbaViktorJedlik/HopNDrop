@@ -88,25 +88,28 @@ export async function findPackage(id?: string) {
   }
 }
 
-export async function updatePackage(pkg: Partial<Package> & { id: string }) {
-  try {
-    const upodatedPkg = await prisma.package.update({
-      where: {
-        id: pkg.id,
-      },
-      data: pkg,
-      include: {
-        fromU: true,
-        toU: true,
-        toP: true,
-        fromP: true,
-        deliveryU: true,
-      },
-    });
+export async function updatePackage(pkg: Partial<Package> & {id: string}) {
+    try {
+        const updatedPkg = await prisma.package.update({
+            where: {
+                id: pkg.id,
+            },
+            data: {
+                ...pkg
+            },
+            include:{
+                fromU:true,
+                toU:true,
+                toP: true,
+                fromP: true,
+                deliveryU: true
+            }
+        });
 
-    return upodatedPkg;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+        return updatedPkg;
+    }
+    catch(error) {
+        console.error(error);
+        return null
+    }
 }
