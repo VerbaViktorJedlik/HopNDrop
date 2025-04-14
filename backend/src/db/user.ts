@@ -50,7 +50,8 @@ export async function findUser(id?: string) {
                 id,
             }
         });
-
+        console.log(id);
+        
         return pkg;
     }
     catch(error) {

@@ -13,17 +13,20 @@ export class PackageController {
       const reqUser = await AuthController.validateUser(req);
 
       if (!reqUser) {
-        res.status(403);
+        res.status(403).json({result: "Error", msg: "Need to log in to access this function."})
         return;
       }
 
       const { toUId, fromPId, toPId, price } = req.body;
-      console.log(req.body);
 
       if (!toUId || !fromPId || !toPId || !price) {
         res.status(400).json({ result: "Error", msg: "Missing fields" });
         return;
       }
+
+      const user = (await findUser(reqUser.id))![0];
+      
+      await updateUser({id: reqUser.id, balance: user.balance - 400});      
 
       const createdPackage = await createPackage(
         reqUser.id,
@@ -33,13 +36,14 @@ export class PackageController {
         price,
         400
       );
-
+      
       if (!createdPackage) {
         res
-          .status(500)
-          .json({ result: "Error", msg: "Failed to create package." });
+        .status(500)
+        .json({ result: "Error", msg: "Failed to create package." });
         return;
       }
+
       res.json({ result: "Success", package: createdPackage });
       return;
     } catch (error) {
