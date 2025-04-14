@@ -7,11 +7,11 @@ export type PublicPackage = {
   toP: PublicPPP,
   fromU: PublicUser,
   toU: PublicUser,
-  deliveryU: PublicUser,
+  deliveryU: PublicUser | null,
   price: Number,
   reward: Number,
 
-  status: "Waiting" | "En Route" | "Delivered" | "Completed"
+  status: "Waiting" | "EnRoute" | "Delivered" | "Completed"
 }
 
 /**

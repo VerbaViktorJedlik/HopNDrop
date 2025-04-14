@@ -53,15 +53,46 @@ export async function createPackage(fromUId: string, toUId: string, fromPId: str
     }
 }
 
-export async function findPackage(id?: string): Promise<Package[] | null> {
+export async function findPackage(id?: string) {
     try {
         const pkg = await prisma.package.findMany({
             where: {
                 id,
+            },
+            include:{
+                fromU:true,
+                toU:true,
+                toP: true,
+                fromP: true,
+                deliveryU: true
             }
         });
 
         return pkg;
+    }
+    catch(error) {
+        console.error(error);
+        return null
+    }
+}
+
+export async function updatePackage(pkg: Partial<Package> & {id: string}) {
+    try {
+        const upodatedPkg = await prisma.package.update({
+            where: {
+                id: pkg.id,
+            },
+            data: pkg,
+            include:{
+                fromU:true,
+                toU:true,
+                toP: true,
+                fromP: true,
+                deliveryU: true
+            }
+        });
+
+        return upodatedPkg;
     }
     catch(error) {
         console.error(error);
