@@ -56,3 +56,13 @@ export async function findUserById(id: string): Promise<User | null> {
     return null;
   }
 }
+
+export async function findUsers() {
+  try {
+    const users = await prisma.user.findMany();
+    return users;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
