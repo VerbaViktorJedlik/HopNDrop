@@ -15,13 +15,16 @@ import { PublicPPP } from "@common";
 import { PackageService } from "~/services/package.service";
 import { use, useEffect, useState } from "react";
 import { UserService } from "~/services/user.service";
+
 export function PostageTable() {
   const [postages, setPostages] = useState<PublicPackage[] | null>();
+  const [loggedInUser, setLoggedInUser] = useState<PublicUser | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const loggedInUser = await UserService.getSelf();
-      const data = await PackageService.GetAllUserPackages(loggedInUser?.id!);
+      const user = await UserService.getSelf();
+      setLoggedInUser(user);
+      const data = await PackageService.GetAllUserPackages(user?.id!);
       setPostages(data);
     };
     fetchData();
@@ -37,10 +40,12 @@ export function PostageTable() {
           <TableHead>Státusz</TableHead>
           <TableHead>Ár</TableHead>
           <TableHead>Juttatás</TableHead>
+          <TableHead className="text-right">Művelet</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {postages &&
+          loggedInUser &&
           postages.map((postage) => (
             <TableRow key={postage.id}>
               <TableCell className="font-medium">
@@ -51,7 +56,13 @@ export function PostageTable() {
               <TableCell>{postage.price.toString()}</TableCell>
               <TableCell>{postage.reward.toString()}</TableCell>
               <TableCell className="text-right">
-                <button>asd</button>
+                {postage.toP.id === loggedInUser.id
+                  ? "Érkező"
+                  : postage.fromP.id === loggedInUser.id
+                  ? "Elküldve"
+                  : postage.deliveryU?.id === loggedInUser.id
+                  ? "Kiszállítandó"
+                  : ""}
               </TableCell>
             </TableRow>
           ))}
