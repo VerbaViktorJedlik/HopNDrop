@@ -67,7 +67,11 @@ function tracker() {
                   <FormItem>
                     <FormLabel>Csomag azonosító</FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="package id" {...field} />
+                      <Input
+                        type="text"
+                        placeholder="36 jegyű azonosító"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
