@@ -45,9 +45,12 @@ function tracker() {
     <div className="flex flex-col items-center justify-center min-h-screen gap-4">
       <Link
         to="/login"
-        className="flex items-center gap-2 text-sm transition-colors duration-200 group hover:cursor-pointer"
+        className="flex items-center gap-2 text-sm transition-colors duration-200 group"
       >
-        <Button variant={"outline"} className="absolute top-4 left-4">
+        <Button
+          variant={"outline"}
+          className="absolute top-4 left-4 hover:cursor-pointer"
+        >
           <MoveLeft className="h-4 w-4" />
           <span>Vissza a belépéshez</span>
         </Button>

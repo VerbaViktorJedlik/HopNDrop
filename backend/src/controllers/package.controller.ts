@@ -150,7 +150,7 @@ export class PackageController {
     res: Response<PackageResponse>
   ) {
     let pkgs = await findPackage(req.params.id);
-    if (pkgs == null) {
+    if (!pkgs || !pkgs.length ) {
       res.status(404).json({
         result: "Error",
         msg: "Nem létezik csomag ilyen azonosítóval.",
@@ -162,7 +162,7 @@ export class PackageController {
   }
   static async getAllPkg(req: Request, res: Response<FindPackageResponse>) {
     let pkgs = await findPackage();
-    if (pkgs == null) {
+    if (!pkgs || !pkgs.length) {
       res.status(404).json({
         result: "Error",
         msg: "Nem létezik csomag ilyen azonosítóval.",
