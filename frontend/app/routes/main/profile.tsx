@@ -20,15 +20,15 @@ export default function profile() {
         <CardContent>
           <PostageTable />
         </CardContent>
-        <div className="buttons flex justify-center gap-4 mt-5 ">
-          <Button asChild>
-            <Link to="/send">Új csomag feladása</Link>
-          </Button>
-          <Button>
-            <Link to="/pickup">Új csomag elvállalása</Link>
-          </Button>
-        </div>
       </Card>
+      <div className="buttons flex justify-center gap-4 mt-5 ">
+        <Button asChild>
+          <Link to="/send">Új csomag feladása</Link>
+        </Button>
+        <Button>
+          <Link to="/pickup">Új csomag elvállalása</Link>
+        </Button>
+      </div>
     </div>
   );
 }
