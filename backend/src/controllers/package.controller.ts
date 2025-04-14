@@ -25,7 +25,7 @@ export class PackageController {
         return;
     }
 
-    res.status(200).json({result: "Success", ...updatedPkg});
+    res.status(200).json({result: "Success", package: updatedPkg});
 }
 
 static async deliver(req: Request<{id:string}>, res: Response<PackageResponse>) {
@@ -48,7 +48,7 @@ static async deliver(req: Request<{id:string}>, res: Response<PackageResponse>) 
         return;
     }
     
-    res.status(200).json({result: "Success", ...updatedPkg});
+    res.status(200).json({result: "Success", package: updatedPkg});
 }
 static async recieve(req: Request<{id:string}>, res: Response<PackageResponse>) {
     let pkgs = await findPackage(req.params.id);
@@ -70,7 +70,7 @@ static async recieve(req: Request<{id:string}>, res: Response<PackageResponse>) 
         return;
     }
     
-    res.status(200).json({result: "Success", ...updatedPkg});
+    res.status(200).json({result: "Success", package: updatedPkg});
 }
 
 static async getPkg(req: Request<{id:string}>, res: Response<PackageResponse>) {
@@ -80,7 +80,7 @@ static async getPkg(req: Request<{id:string}>, res: Response<PackageResponse>) {
         return;
     }
     let pkg = pkgs[0];
-    res.status(200).json({result: "Success", ...pkg});
+    res.status(200).json({result: "Success", package: pkg});
 }
 static async getAllPkg(req: Request, res: Response<FindPackageResponse>) {
     let pkgs = await findPackage();
