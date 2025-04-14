@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -73,10 +73,31 @@ function send() {
     }
   };
 
-  async function handleOnClick() {
-    const users = await UserService.getUsersByName(search);
-    setUsers(users);
+  const searchUsers = async (query: string) => {
+    if (query.length >= 2) {
+      const results = await UserService.getUsersByName(query);
+      setUsers(results);
+    } else if (query.length === 0) {
+      setUsers(null);
+    }
+  };
+
+  function debounce<F extends (...args: any[]) => any>(func: F, delay: number) {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    return function (...args: Parameters<F>) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    } as F;
   }
+
+  const debouncedSearch = debounce(searchUsers, 300);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearch(value);
+    debouncedSearch(value);
+  };
 
   return (
     <div>
@@ -97,29 +118,36 @@ function send() {
             <div className="flex flex-col gap-2 mb-3">
               <Label>Felhasználó keresés</Label>
               <Input
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleSearchChange}
                 value={search}
                 type="text"
-                placeholder="felhasználó név"
-              ></Input>
-              <Button onClick={handleOnClick}>Felhasználó keresés</Button>
+                placeholder="Felhasználó neve"
+              />
+
+              {users && users.length > 0 ? (
+                <div className="mt-2 border rounded-md max-h-60 overflow-y-auto">
+                  <ul className="divide-y">
+                    {users.map((user) => (
+                      <li
+                        key={user.id}
+                        className="px-3 py-2 hover:bg-secondary cursor-pointer flex justify-between items-center"
+                        onClick={() => {
+                          setSelectedUserId(user.id);
+                          setSearch(user.username);
+                          setUsers(null);
+                        }}
+                      >
+                        <span>{user.username}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : search.length >= 2 && !selectedUserId ? (
+                <p className="text-sm text-gray-500 mt-1">
+                  {users === null ? "Keresés..." : "Nincs találat"}
+                </p>
+              ) : null}
             </div>
-            <Label>Kinek?</Label>
-            <Select
-              onValueChange={(val) => setSelectedUserId(val)}
-              value={selectedUserId || ""}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Válassz egy felhasználót" />
-              </SelectTrigger>
-              <SelectContent>
-                {users?.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
-                    {user.username}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -137,7 +165,7 @@ function send() {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Válassz egy autómatát" />
+                            <SelectValue placeholder="Válassz egy automatát" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -167,7 +195,7 @@ function send() {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Válassz egy autómatát" />
+                            <SelectValue placeholder="Válassz egy automatát" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>

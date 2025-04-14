@@ -28,7 +28,15 @@ export class PackageController {
         return;
       }
 
-      const user = (await findUser(reqUser.id))![0];
+      const user = await findUser(reqUser.id);
+
+      if (!user) {
+        res.status(404).json({
+          result: "Error",
+          msg: "Nem létezik user ilyen azonosítóval.",
+        });
+        return;
+      }
 
       await updateUser({ id: reqUser.id, balance: user.balance - 400 });
 

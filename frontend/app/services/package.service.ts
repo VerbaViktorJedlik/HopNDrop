@@ -158,6 +158,8 @@ export class PackageService {
           fromPId: fromPId,
           toPId: toPId,
           price: price,
+          weight: 10,
+          size: "M",
         }),
       });
       const result: PackageResponse = await response.json();
