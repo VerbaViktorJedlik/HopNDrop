@@ -60,7 +60,6 @@ export function PostageTable() {
           <TableHead>Státusz</TableHead>
           <TableHead>Ár</TableHead>
           <TableHead>Juttatás</TableHead>
-          <TableHead className="text-right">Művelet</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
