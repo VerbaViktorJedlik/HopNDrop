@@ -164,6 +164,7 @@ export class PackageController {
     let pkg = pkgs[0];
     res.status(200).json({ result: "Success", package: pkg });
   }
+
   static async getAllPkg(req: Request, res: Response<FindPackageResponse>) {
     let pkgs = await findPackage();
     if (!pkgs || !pkgs.length) {
@@ -174,6 +175,26 @@ export class PackageController {
       return;
     }
     res.status(200).json({ result: "Success", packages: pkgs });
+  }
+
+  static async getAvailablePkgs(
+    req: Request,
+    res: Response<FindPackageResponse>
+  ) {
+    let pkgs = await findPackage();
+    if (!pkgs || !pkgs.length) {
+      res.status(404).json({
+        result: "Error",
+        msg: "Nem létezik csomag ilyen azonosítóval.",
+      });
+      return;
+    }
+    res
+      .status(200)
+      .json({
+        result: "Success",
+        packages: pkgs.filter((p) => !p.deliveryUId),
+      });
   }
 
   static async getAllUserPkg(
