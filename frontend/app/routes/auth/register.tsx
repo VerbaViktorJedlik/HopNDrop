@@ -14,14 +14,12 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 import { Input } from "../../components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { MoveLeft } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { AuthService } from "~/services/auth.service";
+import { useEffect, useState } from "react";
+import { Label } from "~/components/ui/label";
 
 const formSchema = z.object({
   username: z.string(),
@@ -32,13 +30,15 @@ const formSchema = z.object({
   //   .min(6, {
   //   message: "Password must be at least 6 characters.",
   // }),
-  confirmPassword: z.string()
+  confirmPassword: z.string(),
   //   .min(6, {
   //   message: "Confirmation must match the password.",
   // }),
 });
 
 export function register() {
+  const [error, setError] = useState<string>("");
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,7 +48,26 @@ export function register() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {};
+  useEffect(() => {
+    setError("");
+  }, [form]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    if (values.password !== values.confirmPassword) {
+      setError("Nem egyezik a két jelszó!");
+      return;
+    }
+    const isSuccess = await AuthService.registerUser(
+      values.username,
+      values.password
+    );
+    if (isSuccess) {
+      navigate("/profile");
+      return;
+    }
+    setError("Nem sikerült regisztrálni! (Van ilyen felhasználó)");
+  };
 
   return (
     <div>
@@ -92,7 +111,11 @@ export function register() {
                     <FormItem>
                       <FormLabel>Jelszó</FormLabel>
                       <FormControl>
-                        <Input placeholder="your password" {...field} />
+                        <Input
+                          type="password"
+                          placeholder="your password"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -105,17 +128,22 @@ export function register() {
                     <FormItem>
                       <FormLabel>Jelszó megerősítése</FormLabel>
                       <FormControl>
-                        <Input placeholder="your password again" {...field} />
+                        <Input
+                          type="password"
+                          placeholder="your password again"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                {error && <Label className="text-destructive">{error}</Label>}
                 <Button
                   type="submit"
                   className="float-right hover:cursor-pointer"
                 >
-                  <Link to="/auth/register">Regisztráció</Link>
+                  Regisztráció
                 </Button>
               </form>
             </Form>

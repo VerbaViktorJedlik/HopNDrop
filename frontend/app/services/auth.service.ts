@@ -33,10 +33,7 @@ export class AuthService {
     }
   }
 
-  static async login(
-    username: string,
-    password: string
-  ): Promise<PublicUser | null> {
+  static async login(username: string, password: string): Promise<boolean> {
     try {
       const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
@@ -49,13 +46,13 @@ export class AuthService {
       const result: AuthResponse = await response.json();
       if (result.result == "Success") {
         ConfigService.setToken(result.jwt);
-        return result.self;
+        return true;
       }
 
-      return null;
+      return false;
     } catch (error) {
       console.log(error);
-      return null;
+      return false;
     }
   }
 
