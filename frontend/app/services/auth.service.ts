@@ -1,4 +1,4 @@
-import { AuthResponse, PublicSelf } from "@common";
+import { AuthResponse, PublicSelf, TokenVerifyResponse } from "@common";
 import { ConfigService } from "./config.service";
 
 export class AuthService{
@@ -37,5 +37,22 @@ export class AuthService{
         }
 
         return null
+    }
+
+    static async verifyToken(): Promise<boolean>{
+        const response = await fetch("http://localhost:3000/api/auth/validate",{
+            method: "POST",
+            headers:{
+                "Content-Type": "application/json",
+                "Authorization": ConfigService.getToken()!
+            }
+        })
+
+        const result: TokenVerifyResponse = await response.json()
+        if (result == "Success") {
+            return true
+        }
+
+        return false
     }
 }
