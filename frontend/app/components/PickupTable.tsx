@@ -17,7 +17,18 @@ const takePackage = (id: string) => async () => {
   console.log(asdf);
 };
 
-function PickupTable({ packages }: { packages: PublicPackage[] }) {
+function PickupTable({
+  packages,
+  refresh,
+}: {
+  packages: PublicPackage[];
+  refresh: () => void;
+}) {
+  const takePackage = (id: string) => async () => {
+    await PackageService.TakePackage(id);
+    refresh();
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -29,10 +40,10 @@ function PickupTable({ packages }: { packages: PublicPackage[] }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {packages.map((pkg) => (
-          <TableRow key={pkg.id}>
-            {pkg.status === "Waiting" && (
-              <>
+        {packages.map(
+          (pkg) =>
+            pkg.status === "Waiting" && (
+              <TableRow key={pkg.id}>
                 <TableCell className="font-medium">
                   {pkg.fromP.location}
                 </TableCell>
@@ -47,10 +58,9 @@ function PickupTable({ packages }: { packages: PublicPackage[] }) {
                     Elvállalom
                   </Button>
                 </TableCell>
-              </>
-            )}
-          </TableRow>
-        ))}
+              </TableRow>
+            )
+        )}
       </TableBody>
     </Table>
   );

@@ -11,16 +11,16 @@ import { useEffect, useState } from "react";
 function pickup() {
   const [packages, setPackages] = useState<PublicPackage[] | null>(null);
 
+  const getPackages = async () => {
+    const packages: PublicPackage[] | null =
+      await PackageService.GetAllPackages();
+    setPackages(packages);
+  };
+
   useEffect(() => {
-    console.log("NEEE");
-    const getPackages = async () => {
-      const packages: PublicPackage[] | null =
-        await PackageService.GetAllPackages();
-      console.log(packages);
-      setPackages(packages);
-    };
     getPackages();
   }, []);
+
   return (
     <div>
       <div className="fixed left-8 top-8">
@@ -41,7 +41,7 @@ function pickup() {
           </CardHeader>
           <CardContent>
             {packages ? (
-              <PickupTable packages={packages} />
+              <PickupTable packages={packages} refresh={getPackages} />
             ) : (
               <div className="text-center">Nincsenek elérhető csomagok</div>
             )}
@@ -51,5 +51,4 @@ function pickup() {
     </div>
   );
 }
-
 export default pickup;
