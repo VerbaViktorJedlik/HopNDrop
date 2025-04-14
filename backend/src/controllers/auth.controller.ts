@@ -1,4 +1,4 @@
-import { AuthResponse, PublicUser } from "@common";
+import { AuthResponse, PublicSelf, PublicUser } from "@common";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import { prisma } from "../main";
@@ -35,9 +35,17 @@ export class AuthController {
 
         try {
             // Find user by username
-            const existingUser = await prisma.user.findUniqueOrThrow({
+            const existingUser = await prisma.user.findUnique({
                 where: { username }
             });
+
+            if (!existingUser) {
+                res.status(400).json({
+                    result: "Error",
+                    msg: "Incorrect username or password!" 
+                }); // "Invalid username or password!"
+                return;
+            }
 
             // Compare the password with the hashed password in the database
             const validPassword = await bcrypt.compare(password, existingUser.password);
@@ -146,6 +154,23 @@ export class AuthController {
             return decoded.user;
         } catch (error) {
             return undefined;
+        }
+    }
+
+    static async validateToken(req: Request, res:Response): Promise<void>{
+        const token = req.headers.authorization?.split(" ").pop()
+        if (!token){
+            res.status(400).json({result: "Error",msg: "No token sent"})
+            return
+        }
+        try {
+            const decoded: JWTDecode = jwt.verify(token, jwtSecret) as JWTDecode;
+
+            res.status(200).json("Success")
+            return 
+        } catch (error) {
+            res.status(400).json("Error")
+            return 
         }
     }
 }
