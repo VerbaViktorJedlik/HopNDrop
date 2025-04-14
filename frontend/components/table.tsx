@@ -21,15 +21,14 @@ export function PostageTable() {
   const [postages, setPostages] = useState<PublicPackage[] | null>();
   const [self, setSelf] = useState<PublicSelf | null>(null);
 
+  const fetchPostages = async () => {
+    const loggedInUser = await UserService.getSelf();
+    const data = await PackageService.GetAllUserPackages(loggedInUser?.id!);
+    setPostages(data);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const loggedInUser = await UserService.getSelf();
-      console.log(loggedInUser?.id);
-      const data = await PackageService.GetAllUserPackages(loggedInUser?.id!);
-      console.log(data);
-      setPostages(data);
-    };
-    fetchData();
+    fetchPostages();
   }, []);
 
   useEffect(() => {
@@ -38,14 +37,16 @@ export function PostageTable() {
       setSelf(self);
     };
     fetchSelf();
-  });
+  }, []); // FONTOS: hiányzott a dependency array, különben minden render után újra lefut!
 
   async function handleDelivered(id: string) {
-    const done = await PackageService.DeliverPackage(id);
+    await PackageService.DeliverPackage(id);
+    await fetchPostages(); // frissítés
   }
 
   async function handleReceive(id: string) {
-    const done = await PackageService.ReceivePackage(id);
+    await PackageService.ReceivePackage(id);
+    await fetchPostages(); // frissítés
   }
 
   return (
@@ -75,18 +76,17 @@ export function PostageTable() {
               <TableCell>{postage.status}</TableCell>
               <TableCell>{postage.price.toString()}</TableCell>
               <TableCell>{postage.reward.toString()}</TableCell>
-              {postage.fromU.id !== self?.id &&
-                postage.status === "EnRoute" && (
-                  <TableCell>
-                    <Button onClick={(e) => handleDelivered(postage.id)}>
-                      Leszállítottam
-                    </Button>
-                  </TableCell>
-                )}
+              {postage.status === "EnRoute" && (
+                <TableCell>
+                  <Button onClick={() => handleDelivered(postage.id)}>
+                    Leszállítottam
+                  </Button>
+                </TableCell>
+              )}
               {postage.toU.id === self?.id &&
                 postage.status === "Delivered" && (
                   <TableCell>
-                    <Button onClick={(e) => handleReceive(postage.id)}>
+                    <Button onClick={() => handleReceive(postage.id)}>
                       Átvettem
                     </Button>
                   </TableCell>

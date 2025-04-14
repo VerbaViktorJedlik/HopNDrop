@@ -54,6 +54,13 @@ export class PackageController {
     req: Request<{ id: string }>,
     res: Response<PackageResponse>
   ) {
+    const reqUser = await AuthController.validateUser(req);
+
+    if (!reqUser) {
+      res.status(403);
+      return;
+    }
+
     let pkgs = await findPackage(req.params.id);
     if (pkgs == null) {
       res.status(404).json({
@@ -71,7 +78,11 @@ export class PackageController {
       return;
     }
     pkg.status = "EnRoute";
-    const updatedPkg = await updatePackage(pkg);
+    const updatedPkg = await updatePackage({
+      id: pkg.id,
+      status: "EnRoute",
+      deliveryUId: reqUser.id,
+    });
 
     if (!updatedPkg) {
       res.status(400).json({
@@ -104,8 +115,8 @@ export class PackageController {
         .json({ result: "Error", msg: "Nem megfelelő a csomag státusza." });
       return;
     }
-    pkg.status = "Delivered";
-    const updatedPkg = await updatePackage(pkg);
+
+    const updatedPkg = await updatePackage({ id: pkg.id, status: "Delivered" });
 
     if (!updatedPkg) {
       res.status(400).json({
@@ -138,7 +149,7 @@ export class PackageController {
       return;
     }
     pkg.status = "Completed";
-    const updatedPkg = await updatePackage(pkg);
+    const updatedPkg = await updatePackage({ id: pkg.id, status: "Completed" });
 
     if (!updatedPkg) {
       res.status(400).json({
