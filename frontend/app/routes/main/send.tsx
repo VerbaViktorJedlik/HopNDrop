@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { PackageService } from "~/services/package.service";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { MoveLeft } from "lucide-react";
 import { PointsService } from "~/services/points.service";
 import { PublicPPP, PublicUser } from "@common";
@@ -44,6 +44,7 @@ function send() {
   const [users, setUsers] = useState<PublicUser[] | null>(null);
   const [search, setSearch] = useState<string>("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const navigate = useNavigate();
   useEffect(() => {
     const getPoints = async () => {
       const points2 = await PointsService.GetAllPoints();
@@ -70,6 +71,7 @@ function send() {
         Number(values.price)
       );
       form.reset();
+      navigate('/profile');
     }
   };
 
