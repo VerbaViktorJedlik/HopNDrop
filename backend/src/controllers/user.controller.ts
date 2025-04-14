@@ -11,10 +11,16 @@ export class UserController{
             }
         })
         if (!user) {
-            res.status(404).send({message: "Nincs ilyen felhasználó."})
+            res.status(404).send({
+                result: "Error",
+                msg: "This user doesn't exist!"
+            });
             return;
         }
-        res.status(200).send(user);
+        res.status(200).send({
+            ...user,
+            result: "Success"
+        });
         return;
     }
 }
