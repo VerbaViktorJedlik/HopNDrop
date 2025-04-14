@@ -1,22 +1,34 @@
-import MyCard from "~/components/MyCard";
-import PlayGround from "./tutorial/tutorialComponents/PlayGround";
-
+import { PostageTable } from "components/table";
+import { Button } from "~/components/ui/button";
+import { Fragment } from "react/jsx-runtime";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Link } from "react-router";
 export default function Home() {
   return (
-    <div className="p-12">
-      <p>
-        Nézzünk pár alap dolgot. A components mappában vannak a componensek,
-        amiket így kell meghívni:{" "}
-        <span className="font-bold">&lt;MyCard&gt; &lt;/MyCard&gt;</span> vagy
-        röviden <span className="font-bold">&lt;MyCard/&gt;</span>
-        <MyCard /> {/* Komponens */}
-        <p>
-          Itt egy PlayGround komponens. Ez a tutorial minden oldal végén ott
-          van, ha szeretnél valamit kipróbálni navigálás nélkül megteheted
-        </p>
-        <hr />
-        <PlayGround />
-      </p>
+    <div className="p-10">
+      <Card>
+        <CardHeader>
+          <CardTitle>Csomagjaid</CardTitle>
+          <CardDescription>Itt láthatod csomagjaid.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PostageTable />
+        </CardContent>
+        <div className="buttons flex justify-center gap-4 mt-5 ">
+          <Button asChild>
+            <Link to="/send">Új csomag feladása</Link>
+          </Button>
+          <Button>
+            <Link to="/pickup">Új csomag elvállalása</Link>
+          </Button>
+        </div>
+      </Card>
     </div>
   );
 }
