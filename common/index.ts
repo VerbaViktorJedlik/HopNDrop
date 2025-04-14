@@ -1,3 +1,3 @@
-export * from "./package";
-export * from "./pickuppoint";
-export * from "./user";
+export * from "./models/package";
+export * from "./models/pickuppoint";
+export * from "./models/user";
