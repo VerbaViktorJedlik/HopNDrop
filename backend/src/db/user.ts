@@ -50,7 +50,8 @@ export async function findUser(id?: string) {
                 id,
             }
         });
-
+        console.log(id);
+        
         return pkg;
     }
     catch(error) {
@@ -74,4 +75,28 @@ export async function updateUser(user: Partial<User> & {id: string}) {
         console.error(error);
         return null
     }
+}
+
+export async function findUserById(id: string): Promise<User | null> {
+  try {
+    const user = await prisma.user.findUniqueOrThrow({
+      where: {
+        id,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function findUsers() {
+  try {
+    const users = await prisma.user.findMany();
+    return users;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 }
