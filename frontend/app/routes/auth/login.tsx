@@ -14,12 +14,7 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 import { Input } from "../../components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Link, useNavigate } from "react-router";
 import { AuthService } from "~/services/auth.service";
 import { ConfigService } from "~/services/config.service";
@@ -59,14 +54,12 @@ export function login() {
     setLoading(true);
     try {
       const self = await AuthService.login(values.username, values.password);
-      console.log(self);
       if (!self) {
         console.log("A bejelentkezés sikertelen");
         setError("A bejelentkezés sikertelen");
         setLoading(false);
         return;
       }
-      ConfigService.setToken(self?.jwt);
       navigate("/profile");
       setLoading(false);
     } catch (error) {
