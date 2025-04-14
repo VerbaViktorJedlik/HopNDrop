@@ -12,7 +12,7 @@ export class AuthService {
     password: string
   ): Promise<boolean> {
     try {
-      const response = await fetch("http://localhost:3000/api/auth/register", {
+      const response = await fetch(`${ConfigService.apiUrl}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,12 +33,9 @@ export class AuthService {
     }
   }
 
-  static async login(
-    username: string,
-    password: string
-  ): Promise<PublicUser | null> {
+  static async login(username: string, password: string): Promise<boolean> {
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch(`${ConfigService.apiUrl}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,19 +46,19 @@ export class AuthService {
       const result: AuthResponse = await response.json();
       if (result.result == "Success") {
         ConfigService.setToken(result.jwt);
-        return result.self;
+        return true;
       }
 
-      return null;
+      return false;
     } catch (error) {
       console.log(error);
-      return null;
+      return false;
     }
   }
 
   static async verifyToken(): Promise<boolean> {
     try {
-      const response = await fetch("http://localhost:3000/api/auth/validate", {
+      const response = await fetch(`${ConfigService.apiUrl}/auth/validate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
