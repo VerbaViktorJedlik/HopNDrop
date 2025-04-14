@@ -13,7 +13,10 @@ export class PackageController {
       const reqUser = await AuthController.validateUser(req);
 
       if (!reqUser) {
-        res.status(403).json({result: "Error", msg: "Need to log in to access this function."})
+        res.status(403).json({
+          result: "Error",
+          msg: "Need to log in to access this function.",
+        });
         return;
       }
 
@@ -23,9 +26,17 @@ export class PackageController {
         return;
       }
 
-      const user = (await findUser(reqUser.id))![0];
-      
-      await updateUser({id: reqUser.id, balance: user.balance - 400});      
+      const user = await findUser(reqUser.id);
+
+      if (!user) {
+        res.status(404).json({
+          result: "Error",
+          msg: "Nem létezik user ilyen azonosítóval.",
+        });
+        return;
+      }
+
+      await updateUser({ id: reqUser.id, balance: user.balance - 400 });
 
       const createdPackage = await createPackage(
         reqUser.id,
@@ -37,11 +48,11 @@ export class PackageController {
         weight,
         size
       );
-      
+
       if (!createdPackage) {
         res
-        .status(500)
-        .json({ result: "Error", msg: "Failed to create package." });
+          .status(500)
+          .json({ result: "Error", msg: "Failed to create package." });
         return;
       }
 
@@ -61,12 +72,10 @@ export class PackageController {
   ) {
     let user = await AuthController.validateUser(req);
     if (!user) {
-      res
-        .status(403)
-        .json({
-          result: "Error",
-          msg: "Need to log in to access this function.",
-        });
+      res.status(403).json({
+        result: "Error",
+        msg: "Need to log in to access this function.",
+      });
       return;
     }
 
@@ -123,22 +132,18 @@ export class PackageController {
   ) {
     let user = await AuthController.validateUser(req);
     if (!user) {
-      res
-        .status(403)
-        .json({
-          result: "Error",
-          msg: "Need to log in to access this function.",
-        });
+      res.status(403).json({
+        result: "Error",
+        msg: "Need to log in to access this function.",
+      });
       return;
     }
     let pkgs = await findPackage(req.params.id);
     if (!pkgs || pkgs.length == 0) {
-      res
-        .status(404)
-        .json({
-          result: "Error",
-          msg: "Nem létezik csomag ilyen azonosítóval.",
-        });
+      res.status(404).json({
+        result: "Error",
+        msg: "Nem létezik csomag ilyen azonosítóval.",
+      });
       return;
     }
     let pkg = pkgs[0];
@@ -181,23 +186,19 @@ export class PackageController {
   ) {
     let user = await AuthController.validateUser(req);
     if (!user) {
-      res
-        .status(403)
-        .json({
-          result: "Error",
-          msg: "Need to log in to access this function.",
-        });
+      res.status(403).json({
+        result: "Error",
+        msg: "Need to log in to access this function.",
+      });
       return;
     }
 
     let pkgs = await findPackage(req.params.id);
     if (!pkgs || pkgs.length == 0) {
-      res
-        .status(404)
-        .json({
-          result: "Error",
-          msg: "Nem létezik csomag ilyen azonosítóval.",
-        });
+      res.status(404).json({
+        result: "Error",
+        msg: "Nem létezik csomag ilyen azonosítóval.",
+      });
       return;
     }
     let pkg = pkgs[0];
@@ -251,12 +252,10 @@ export class PackageController {
   ) {
     let pkgs = await findPackage(req.params.id);
     if (!pkgs || !pkgs.length) {
-      res
-        .status(404)
-        .json({
-          result: "Error",
-          msg: "Nem létezik csomag ilyen azonosítóval.",
-        });
+      res.status(404).json({
+        result: "Error",
+        msg: "Nem létezik csomag ilyen azonosítóval.",
+      });
       return;
     }
     let pkg = pkgs[0];

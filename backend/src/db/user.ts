@@ -39,42 +39,41 @@ export async function createUser(
   } catch (error) {
     console.error(error);
 
-        return null;
-    }
+    return null;
+  }
 }
 
 export async function findUser(id?: string) {
-    try {
-        const pkg = await prisma.user.findMany({
-            where: {
-                id,
-            }
-        });
-        console.log(id);
-        
-        return pkg;
-    }
-    catch(error) {
-        console.error(error);
-        return null
-    }
+  try {
+    const pkg = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    console.log(pkg);
+
+    return pkg;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
-export async function updateUser(user: Partial<User> & {id: string}) {
-    try {
-        const updatedUser = await prisma.user.update({
-            where: {
-                id: user.id,
-            },
-            data: user
-        });
+export async function updateUser(user: Partial<User> & { id: string }) {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: user,
+    });
 
-        return updatedUser;
-    }
-    catch(error) {
-        console.error(error);
-        return null
-    }
+    return updatedUser;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
 export async function findUserById(id: string): Promise<User | null> {
