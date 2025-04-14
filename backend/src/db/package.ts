@@ -52,3 +52,19 @@ export async function createPackage(fromUId: string, toUId: string, fromPId: str
         return null;
     }
 }
+
+export async function findPackage(id?: string): Promise<Package[] | null> {
+    try {
+        const pkg = await prisma.package.findMany({
+            where: {
+                id,
+            }
+        });
+
+        return pkg;
+    }
+    catch(error) {
+        console.error(error);
+        return null
+    }
+}
