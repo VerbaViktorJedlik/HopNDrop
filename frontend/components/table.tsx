@@ -13,18 +13,19 @@ import { PublicPackage } from "@common";
 import { PublicUser } from "@common";
 import { PublicPPP } from "@common";
 import { PackageService } from "~/services/package.service";
-import { use, useEffect } from "react";
+import { use, useEffect, useState } from "react";
+import { UserService } from "~/services/user.service";
 export function PostageTable() {
-  const postages = PackageService.GetAllUserPackages(.id);
+  const [postages, setPostages] = useState<PublicPackage[] | null>();
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await PackageService.GetAllUserPackages(.id);
+      const loggedInUser = await UserService.getSelf();
+      const data = await PackageService.GetAllUserPackages(loggedInUser?.id!);
       setPostages(data);
     };
     fetchData();
   }, []);
-
 
   return (
     <Table>
@@ -39,20 +40,21 @@ export function PostageTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {postages.map((postage) => (
-          <TableRow key={postage.id}>
-            <TableCell className="font-medium">
-              {postage.fromP.location}
-            </TableCell>
-            <TableCell>{postage.toP.location}</TableCell>
-            <TableCell>{postage.status}</TableCell>
-            <TableCell>{postage.price.toString()}</TableCell>
-            <TableCell>{postage.reward.toString()}</TableCell>
-            <TableCell className="text-right">
-              <button>asd</button>
-            </TableCell>
-          </TableRow>
-        ))}
+        {postages &&
+          postages.map((postage) => (
+            <TableRow key={postage.id}>
+              <TableCell className="font-medium">
+                {postage.fromP.location}
+              </TableCell>
+              <TableCell>{postage.toP.location}</TableCell>
+              <TableCell>{postage.status}</TableCell>
+              <TableCell>{postage.price.toString()}</TableCell>
+              <TableCell>{postage.reward.toString()}</TableCell>
+              <TableCell className="text-right">
+                <button>asd</button>
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );

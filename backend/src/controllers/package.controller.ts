@@ -191,12 +191,10 @@ export class PackageController {
       });
       return;
     }
-    res
-      .status(200)
-      .json({
-        result: "Success",
-        packages: pkgs.filter((p) => !p.deliveryUId),
-      });
+    res.status(200).json({
+      result: "Success",
+      packages: pkgs.filter((p) => !p.deliveryUId),
+    });
   }
 
   static async getAllUserPkg(
