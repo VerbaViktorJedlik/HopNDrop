@@ -11,18 +11,20 @@ export class PackageController {
   ): Promise<void> {
     try {
       const reqUser = await AuthController.validateUser(req);
+
       if (!reqUser) {
         res.status(403);
         return;
       }
-      const user = (await findUserById(reqUser.id))!;
-      const { toUId, fromPId, toPId, price, reward } = req.body;
-      if (!toUId || !fromPId || !toPId || !price || !reward) {
+
+      const { toUId, fromPId, toPId, price } = req.body;
+      if (!toUId || !fromPId || !toPId || !price) {
         res.status(400).json({ result: "Error", msg: "Missing fields" });
         return;
       }
+
       const createdPackage = await createPackage(
-        user.id,
+        reqUser.id,
         toUId,
         fromPId,
         toPId,
@@ -39,6 +41,8 @@ export class PackageController {
       res.json({ result: "Success", package: createdPackage });
       return;
     } catch (error) {
+      console.log(error);
+
       res.status(500).json({ result: "Error", msg: "Server error" });
       return;
     }
@@ -150,7 +154,7 @@ export class PackageController {
     res: Response<PackageResponse>
   ) {
     let pkgs = await findPackage(req.params.id);
-    if (!pkgs || !pkgs.length ) {
+    if (!pkgs || !pkgs.length) {
       res.status(404).json({
         result: "Error",
         msg: "Nem létezik csomag ilyen azonosítóval.",

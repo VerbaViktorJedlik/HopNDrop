@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -25,6 +25,8 @@ import {
 import { PackageService } from "~/services/package.service";
 import { Link } from "react-router";
 import { MoveLeft } from "lucide-react";
+import { PointsService } from "~/services/points.service";
+import { PublicPPP } from "@common";
 
 const formSchema = z.object({
   from: z.string().min(2, {
@@ -33,12 +35,17 @@ const formSchema = z.object({
   to: z.string().min(2, {
     message: "Ez a mező kötelező.",
   }),
-  price: z
-    .string()
-    .regex(/^\d+$/, { message: "The price must contain only numbers." })
-    .min(4, { message: "minimum 1000Ft értéknek kell lennie" }),
+  price: z.string().min(1),
 });
 function send() {
+  const [points, setPoints] = useState<PublicPPP[] | null>(null);
+  useEffect(() => {
+    const getPoints = async () => {
+      const points2 = await PointsService.GetAllPoints();
+      setPoints(points2);
+    };
+    getPoints();
+  }, []);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,8 +55,14 @@ function send() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
+    const send = await PackageService.AddPackage(
+      values.to,
+      values.from,
+      values.to,
+      Number(values.price)
+    );
   };
 
   return (
@@ -89,9 +102,11 @@ function send() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="m@example.com">
-                            RAAAAAAAAAH
-                          </SelectItem>
+                          {points?.map((point) => (
+                            <SelectItem value={point.id}>
+                              {point.location}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormDescription>
@@ -117,9 +132,11 @@ function send() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="m@example.com">
-                            RAAAAAAAAAH
-                          </SelectItem>
+                          {points?.map((point) => (
+                            <SelectItem value={point.id}>
+                              {point.location}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormDescription>
@@ -136,7 +153,7 @@ function send() {
                     <FormItem>
                       <FormLabel>Csomag értéke</FormLabel>
                       <FormControl>
-                        <Input placeholder="12345" {...field} />
+                        <Input type="number" placeholder="12345" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
