@@ -1,4 +1,4 @@
-import { AuthResponse, GetSelfResponse, GetUserResponse, PublicSelf, PublicUser, TokenVerifyResponse } from "@common";
+import { AuthResponse, GetAllUsersResponse, GetSelfResponse, GetUserResponse, PublicSelf, PublicUser, TokenVerifyResponse } from "@common";
 import { ConfigService } from "./config.service";
 
 export class UserService{
@@ -37,6 +37,28 @@ export class UserService{
             const result: GetSelfResponse = await response.json()
             if (result.result == "Success") {
                 return result.self;
+            }
+    
+            return null
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+    }
+
+    static async getUsersByName(username:string): Promise<PublicUser[] | null>{
+        try {
+            const response = await fetch(`${ConfigService.apiUrl}/users/${username}`,{
+                method: "GET",
+                headers:{
+                    "Content-Type": "application/json",
+                    Authorization: ConfigService.getToken()!
+                }
+            })
+    
+            const result: GetAllUsersResponse = await response.json()
+            if (result.result == "Success") {
+                return result.users;
             }
     
             return null

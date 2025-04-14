@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../main";
-import { GetSelfResponse, GetUserResponse } from "@common";
+import { GetAllUsersResponse, GetSelfResponse, GetUserResponse, PublicUser } from "@common";
 import { AuthController } from "./auth.controller";
+import { findUsers } from "../db/user";
 
 export class UserController{
     static async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -68,4 +69,19 @@ export class UserController{
         }
         return;
     }
+
+      static async getUserByName(
+        req: Request<{ username: string }>,
+        res: Response<GetAllUsersResponse>
+      ) {
+        let users = await findUsers();
+    
+        const usernameFilter = req.params.username || "";
+    
+        users = users.filter((u:PublicUser) =>
+          u.username.toLowerCase().includes(usernameFilter.toLowerCase())
+        );
+    
+        res.status(200).json({ result: "Success", users });
+      }
 }
