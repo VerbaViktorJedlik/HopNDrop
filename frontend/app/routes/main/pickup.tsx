@@ -34,13 +34,15 @@ const packages: PublicPackage[] = [
 function pickup() {
   return (
     <div>
-      <Link to="/profile">
-        <Button className="flex cursor-pointer" variant={"outline"}>
-          <MoveLeft />
-          <span>Vissza a főoldalra</span>
-        </Button>
-      </Link>
-      <div className="p-10">
+      <div className="fixed left-8 top-8">
+        <Link to="/profile">
+          <Button className="flex cursor-pointer" variant={"outline"}>
+            <MoveLeft />
+            <span>Vissza a főoldalra</span>
+          </Button>
+        </Link>
+      </div>
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <Card>
           <CardHeader>
             <CardTitle>Csomag szállításának elvállalása</CardTitle>
