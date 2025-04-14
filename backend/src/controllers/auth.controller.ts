@@ -34,9 +34,17 @@ export class AuthController {
 
         try {
             // Find user by username
-            const existingUser = await prisma.user.findUniqueOrThrow({
+            const existingUser = await prisma.user.findUnique({
                 where: { username }
             });
+
+            if (!existingUser) {
+                res.status(400).json({
+                    result: "Error",
+                    msg: "Incorrect username or password!" 
+                }); // "Invalid username or password!"
+                return;
+            }
 
             // Compare the password with the hashed password in the database
             const validPassword = await bcrypt.compare(password, existingUser.password);
@@ -53,9 +61,12 @@ export class AuthController {
             const jwtToken = AuthController.generateJWT(existingUser);
 
             const response: AuthResponse = {
-                ...existingUser,
+                
                 result: "Success",
-                jwt: jwtToken
+                self: {
+                    ...existingUser,
+                    jwt: jwtToken
+                }
             }
 
             // Return response with token
@@ -113,9 +124,11 @@ export class AuthController {
             const jwtToken = AuthController.generateJWT(newUser);
 
             const response: AuthResponse = {
-                ...newUser,
                 result: "Success",
-                jwt: jwtToken
+                self: {
+                    ...newUser,
+                    jwt: jwtToken
+                }
             }
 
             // Return response with token
