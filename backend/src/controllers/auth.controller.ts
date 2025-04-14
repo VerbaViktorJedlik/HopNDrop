@@ -25,7 +25,10 @@ export class AuthController {
         const password: string = req.body!.password;
 
         if (!username || !password) {
-            res.status(400).json({ message: "Felhasználónév és jelszó kötelező!" }); // "Username and password are required!"
+            res.status(400).json({
+                result: "Error",
+                msg: "'username' and 'password' are required!" 
+            }); // "Username and password are required!"
             return;
         }
 
@@ -39,7 +42,10 @@ export class AuthController {
             const validPassword = await bcrypt.compare(password, existingUser.password);
 
             if (!validPassword) {
-                res.status(400).json({ message: "Hibás felhasználónév vagy jelszó!" }); // "Invalid username or password!"
+                res.status(400).json({
+                    result: "Error",
+                    msg: "Incorrect username or password!" 
+                }); // "Invalid username or password!"
                 return;
             }
 
@@ -48,6 +54,7 @@ export class AuthController {
 
             const response: AuthResponse = {
                 ...existingUser,
+                result: "Success",
                 jwt: jwtToken
             }
 
@@ -56,7 +63,10 @@ export class AuthController {
             return;
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: "Hiba történt a bejelentkezés során!" }); // "An error occurred during login!"
+            res.status(500).json({
+                result: "Error",
+                msg: "An error occured during login!" 
+            }); // "An error occurred during login!"
             return;
         }
     }
@@ -67,7 +77,10 @@ export class AuthController {
         const password: string = req.body!.password;
 
         if (!username || !password) {
-            res.status(400).json({ message: "Felhasználónév és jelszó kötelező!" }); // "Username and password are required!"
+            res.status(400).json({
+                result: "Error",
+                msg: "'username' and 'password' are required!" 
+            }); // "Username and password are required!"
             return;
         }
 
@@ -78,7 +91,10 @@ export class AuthController {
             });
 
             if (existingUser) {
-                res.status(400).json({ message: "Ilyen felhasználó már létezik!" }); // "A user with this username already exists!"
+                res.status(400).json({
+                    result: "Error",
+                    msg: "This user already exists!" 
+                }); // "A user with this username already exists!"
                 return;
             }
 
@@ -98,6 +114,7 @@ export class AuthController {
 
             const response: AuthResponse = {
                 ...newUser,
+                result: "Success",
                 jwt: jwtToken
             }
 
@@ -106,7 +123,10 @@ export class AuthController {
             return;
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: "Hiba történt a regisztráció során!" }); // "An error occurred during registration!"
+            res.status(500).json({
+                result: "Error",
+                msg: "An error occured during registration!" 
+            }); // "An error occurred during registration!"
             return;
         }
     }
