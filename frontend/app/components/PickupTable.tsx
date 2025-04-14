@@ -12,18 +12,10 @@ import { PublicPackage } from "@common";
 import { Button } from "./ui/button";
 import { PackageService } from "~/services/package.service";
 
-const takePackage = (id: string) => async () => { 
-  PackageService.TakePackage(id).then((res) => {
-    if (res) {
-      alert("Csomag elvállalva!");
-    } else {
-      alert("Hiba történt a csomag elvállalásakor!");
-    }
-  },
-  ).catch((err) => {
-    alert("Hiba történt a csomag elvállalásakor!");
-  });
-}
+const takePackage = (id: string) => async () => {
+  const asdf = await PackageService.TakePackage(id);
+  console.log(asdf);
+};
 
 function PickupTable({ packages }: { packages: PublicPackage[] }) {
   return (
@@ -39,13 +31,24 @@ function PickupTable({ packages }: { packages: PublicPackage[] }) {
       <TableBody>
         {packages.map((pkg) => (
           <TableRow key={pkg.id}>
-            <TableCell className="font-medium">{pkg.fromP.location}</TableCell>
-            <TableCell>{pkg.toP.location}</TableCell>
-            <TableCell>{pkg.price.toString()}</TableCell>
-            <TableCell>{pkg.reward.toString()}</TableCell>
-            <TableCell className="text-right">
-              <Button className="hover:cursor-pointer" onClick={takePackage(pkg.id)}>Elvállalom</Button>
-            </TableCell>
+            {pkg.status === "Waiting" && (
+              <>
+                <TableCell className="font-medium">
+                  {pkg.fromP.location}
+                </TableCell>
+                <TableCell>{pkg.toP.location}</TableCell>
+                <TableCell>{pkg.price.toString()}</TableCell>
+                <TableCell>{pkg.reward.toString()}</TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    className="hover:cursor-pointer"
+                    onClick={takePackage(pkg.id)}
+                  >
+                    Elvállalom
+                  </Button>
+                </TableCell>
+              </>
+            )}
           </TableRow>
         ))}
       </TableBody>

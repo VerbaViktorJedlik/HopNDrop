@@ -69,8 +69,8 @@ function send() {
         values.to,
         Number(values.price)
       );
+      form.reset();
     }
-    form.reset();
   };
 
   const searchUsers = async (query: string) => {

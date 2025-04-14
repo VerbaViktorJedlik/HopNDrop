@@ -13,10 +13,12 @@ export class PackageController {
       const reqUser = await AuthController.validateUser(req);
 
       if (!reqUser) {
-        res.status(403).json({
-          result: "Error",
-          msg: "Need to log in to access this function.",
-        });
+        res
+          .status(403)
+          .json({
+            result: "Error",
+            msg: "Need to log in to access this function.",
+          });
         return;
       }
 

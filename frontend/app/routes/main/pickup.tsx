@@ -6,10 +6,21 @@ import { MoveLeft } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Link } from "react-router";
 import { PackageService } from "~/services/package.service";
-
-const packages: PublicPackage[] | null = await PackageService.GetAllPackages();
+import { useEffect, useState } from "react";
 
 function pickup() {
+  const [packages, setPackages] = useState<PublicPackage[] | null>(null);
+
+  useEffect(() => {
+    console.log("NEEE");
+    const getPackages = async () => {
+      const packages: PublicPackage[] | null =
+        await PackageService.GetAllPackages();
+      console.log(packages);
+      setPackages(packages);
+    };
+    getPackages();
+  }, []);
   return (
     <div>
       <div className="fixed left-8 top-8">
@@ -29,11 +40,11 @@ function pickup() {
             <CardTitle>Csomag szállításának elvállalása</CardTitle>
           </CardHeader>
           <CardContent>
-            {
-              packages ?
-                <PickupTable packages={packages} />
-                : <div className="text-center">Nincsenek elérhető csomagok</div>
-            }
+            {packages ? (
+              <PickupTable packages={packages} />
+            ) : (
+              <div className="text-center">Nincsenek elérhető csomagok</div>
+            )}
           </CardContent>
         </Card>
       </div>
