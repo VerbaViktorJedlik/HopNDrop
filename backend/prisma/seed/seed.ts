@@ -22,7 +22,7 @@ export async function seedDb() {
 
   const ppps = await Promise.all(
     data.ppps.map(async (p) => {
-      return await createPickUpPoint(p.location)!;
+      return await createPickUpPoint(p.location, p.name)!;
     })
   );
 

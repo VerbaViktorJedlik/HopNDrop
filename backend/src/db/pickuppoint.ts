@@ -18,12 +18,14 @@ import { prisma } from "../main";
  * - Location field has unique constraint to prevent duplicates
  */
 export async function createPickUpPoint(
-  location: string
+  location: string,
+  name: string
 ): Promise<PickUpPoint | null> {
   try {
     const ppp = await prisma.pickUpPoint.create({
       data: {
         location,
+        name,
       },
     });
 
