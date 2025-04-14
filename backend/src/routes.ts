@@ -15,6 +15,8 @@ router.post("/package", PackageController.create);
 router.get("/package/get", PackageController.getAllPkg);
 router.get("/package/get/:id", PackageController.getPkg);
 
+router.get("/user/:id/package", PackageController.getAllUserPkg);
+
 router.get("/points/:location", PointController.getAllPPP);
 router.get("/points/", PointController.getAllPPP);
 
