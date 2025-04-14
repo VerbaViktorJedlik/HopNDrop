@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { findPackage, updatePackage } from "../db/package";
-import { PackageResponse } from "@common";
+import { Package } from "@prisma/client";
+import { FindPackageResponse, PackageResponse } from "@common";
 
 export class PackageController {
 
@@ -71,4 +72,23 @@ static async recieve(req: Request<{id:string}>, res: Response<PackageResponse>) 
     
     res.status(200).json({result: "Success", ...updatedPkg});
 }
+
+static async getPkg(req: Request<{id:string}>, res: Response<PackageResponse>) {
+    let pkgs = await findPackage(req.params.id);
+    if(pkgs == null){
+        res.status(404).json({ result: "Error", msg: "Nem létezik csomag ilyen azonosítóval."});
+        return;
+    }
+    let pkg = pkgs[0];
+    res.status(200).json({result: "Success", ...pkg});
+}
+static async getAllPkg(req: Request, res: Response<FindPackageResponse>) {
+    let pkgs = await findPackage();
+    if(pkgs == null){
+        res.status(404).json({ result: "Error", msg: "Nem létezik csomag ilyen azonosítóval."});
+        return;
+    }
+    res.status(200).json({result: "Success", packages: pkgs});
+}
+
 }

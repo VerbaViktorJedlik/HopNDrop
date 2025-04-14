@@ -49,4 +49,4 @@ export type NewPackageBody = {
 }
 
 export type PackageResponse = (PublicPackage & {result: "Success"}) | {result: "Error", msg: string}
-export type FindPackageResponse = (PublicPackage[] & {result: "Success"}) | {result: "Error", msg: string}
+export type FindPackageResponse = ({packages: PublicPackage[], result: "Success"}) | {result: "Error", msg: string}
