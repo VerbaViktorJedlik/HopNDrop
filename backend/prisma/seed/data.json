@@ -1,96 +1,188 @@
 {
-    "users": [
-      {
-        "id": "user1",
-        "username": "john_doe",
-        "password": "hashed_password_1",
-        "balance": 100
-      },
-      {
-        "id": "user2",
-        "username": "jane_smith",
-        "password": "hashed_password_2",
-        "balance": 250
-      },
-      {
-        "id": "user3",
-        "username": "mike_jones",
-        "password": "hashed_password_3",
-        "balance": 75
-      },
-      {
-        "id": "user4",
-        "username": "sarah_williams",
-        "password": "hashed_password_4",
-        "balance": 300
-      }
-    ],
-    "ppps": [
-      {
-        "id": "ppp1",
-        "location": "Central Station, Main Hall"
-      },
-      {
-        "id": "ppp2",
-        "location": "University Campus, Library Entrance"
-      },
-      {
-        "id": "ppp3",
-        "location": "Shopping Mall, North Entrance"
-      },
-      {
-        "id": "ppp4",
-        "location": "City Park, Main Gate"
-      },
-      {
-        "id": "ppp5",
-        "location": "Business District, Tower A Lobby"
-      }
-    ],
-    "packages": [
-      {
-        "id": "pkg1",
-        "fromP": 0,
-        "toP": 1,
-        "fromU": 0,
-        "toU": 1,
-        "deliveryU": 2,
-        "price": 15,
-        "reward": 5,
-        "status": "Completed"
-      },
-      {
-        "id": "pkg2",
-        "fromP": 2,
-        "toP": 3,
-        "fromU": 1,
-        "toU": 3,
-        "deliveryU": 0,
-        "price": 20,
-        "reward": 7,
-        "status": "En Route"
-      },
-      {
-        "id": "pkg3",
-        "fromP": 4,
-        "toP": 0,
-        "fromU": 3,
-        "toU": 2,
-        "deliveryU": 1,
-        "price": 12,
-        "reward": 4,
-        "status": "Delivered"
-      },
-      {
-        "id": "pkg4",
-        "fromP": 1,
-        "toP": 4,
-        "fromU": 2,
-        "toU": 0,
-        "deliveryU": null,
-        "price": 18,
-        "reward": 6,
-        "status": "Waiting"
-      }
-    ]
-  }
+  "users": [
+    {
+      "id": "user1",
+      "username": "john_doe",
+      "password": "hashed_password_1",
+      "balance": 100
+    },
+    {
+      "id": "user2",
+      "username": "jane_smith",
+      "password": "hashed_password_2",
+      "balance": 250
+    },
+    {
+      "id": "user3",
+      "username": "mike_jones",
+      "password": "hashed_password_3",
+      "balance": 75
+    },
+    {
+      "id": "user4",
+      "username": "sarah_williams",
+      "password": "hashed_password_4",
+      "balance": 300
+    }
+  ],
+  "ppps": [
+    {
+      "name": "hopNdrop Győr ALDI ETO Park",
+      "location": "9027 Győr, Nagysándor József utca 31."
+    },
+    {
+      "name": "hopNdrop Győr ALDI Fehérvári út",
+      "location": "9023 Győr, Fehérvári út 5/A"
+    },
+    {
+      "name": "hopNdrop Győr Adyvárosi Csomagpont",
+      "location": "9023 Győr, Kodály Zoltán utca 4."
+    },
+    {
+      "name": "hopNdrop Győr Adyvárosi Tópart Pizzéria",
+      "location": "9023 Győr, Ifjúság krt. 113."
+    },
+    {
+      "name": "hopNdrop Győr Bubbles Gerence utca",
+      "location": "9027 Győr, Gerence utca 29-31."
+    },
+    {
+      "name": "hopNdrop Győr Bubbles Kandó Kálmán utca",
+      "location": "9027 Győr, Kandó Kálmán u. 1."
+    },
+    {
+      "name": "hopNdrop Győr CBA Príma Új-Élet utca",
+      "location": "9012 Győr, Új-Élet utca 19."
+    },
+    {
+      "name": "hopNdrop Győr CBA Szigethy Attila út",
+      "location": "9023 Győr, Szigethy Attila út 80."
+    },
+    {
+      "name": "hopNdrop Győr CBA Törökverő út",
+      "location": "9011 Győr, Törökverő út 3."
+    },
+    {
+      "name": "hopNdrop Győr Coop Jereváni út",
+      "location": "9028 Győr, Jereváni út 28."
+    },
+    {
+      "name": "hopNdrop Győr Coop Külső-Bácsai út",
+      "location": "9029 Győr, Külső-Bácsai út 52/D"
+    },
+    {
+      "name": "hopNdrop Győr Csoki Sziget ABC",
+      "location": "9023 Győr, Eszperantó út 13."
+    },
+    {
+      "name": "hopNdrop Győr Duna Center",
+      "location": "9025 Győr, Csipkegyári út 11."
+    },
+    {
+      "name": "hopNdrop Győr Festékpont József Attila utca",
+      "location": "9028 Győr, József Attila utca 129."
+    },
+    {
+      "name": "hopNdrop Győr Interspar",
+      "location": "9023 Győr, Fehérvári út 3."
+    },
+    {
+      "name": "hopNdrop Győr Kurta Kocsma",
+      "location": "9030 Győr, István Király út 57."
+    },
+    {
+      "name": "hopNdrop Győr NÍVÓ",
+      "location": "9023 Győr, Mészáros Lőrinc utca 12."
+    },
+    {
+      "name": "hopNdrop Győr Orlen Nagy Imre utca",
+      "location": "9024 Győr, Nagy Imre utca 85."
+    },
+    {
+      "name": "hopNdrop Győr Reál Körtöltés utca",
+      "location": "9026 Győr, Körtöltés utca 2."
+    },
+    {
+      "name": "hopNdrop Győr Szatmári",
+      "location": "9024 Győr, Szauter Ferenc utca 3."
+    },
+    {
+      "name": "hopNdrop Győr Tesco Hédervári út",
+      "location": "9026 Győr, Hédervári út 20."
+    },
+    {
+      "name": "hopNdrop Győr Tesco Királyszék út",
+      "location": "9012 Győr, Királyszék út 33."
+    },
+    {
+      "name": "hopNdrop Győr Tesco Mécs László utca",
+      "location": "9024 Győr, Mécs László utca 4."
+    },
+    {
+      "name": "hopNdrop Győr Tesco Szigethy Attila út",
+      "location": "9023 Győr, Szigethy Attila út 112."
+    },
+    {
+      "name": "hopNdrop Győr Turbo-Tec Szervíz",
+      "location": "9025 Győr, Kossuth Lajos utca 166."
+    },
+    {
+      "name": "hopNdrop Győr Vásárcsarnok",
+      "location": "9023 Győr, Herman Ottó utca 25."
+    },
+    {
+      "name": "hopNdrop Győr Árkád",
+      "location": "9027 Győr, Budai út 1."
+    },
+    {
+      "name": "hopNdrop Győrszentiván Reál",
+      "location": "9011 Győr, Kör tér 47."
+    }
+  ],
+  "packages": [
+    {
+      "id": "pkg1",
+      "fromP": 0,
+      "toP": 1,
+      "fromU": 0,
+      "toU": 1,
+      "deliveryU": 2,
+      "price": 15,
+      "reward": 5,
+      "status": "Completed"
+    },
+    {
+      "id": "pkg2",
+      "fromP": 2,
+      "toP": 3,
+      "fromU": 1,
+      "toU": 3,
+      "deliveryU": 0,
+      "price": 20,
+      "reward": 7,
+      "status": "En Route"
+    },
+    {
+      "id": "pkg3",
+      "fromP": 4,
+      "toP": 0,
+      "fromU": 3,
+      "toU": 2,
+      "deliveryU": 1,
+      "price": 12,
+      "reward": 4,
+      "status": "Delivered"
+    },
+    {
+      "id": "pkg4",
+      "fromP": 1,
+      "toP": 4,
+      "fromU": 2,
+      "toU": 0,
+      "deliveryU": null,
+      "price": 18,
+      "reward": 6,
+      "status": "Waiting"
+    }
+  ]
+}

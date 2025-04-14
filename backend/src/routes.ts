@@ -2,6 +2,7 @@ import express from "express";
 import { AuthController } from "./controllers/auth.controller";
 import { PackageController } from "./controllers/package.controller";
 import { PointController } from "./controllers/point.controller";
+import { UserController } from "./controllers/user.controller";
 
 export const router = express.Router();
 
@@ -19,5 +20,9 @@ router.get("/user/:id/package", PackageController.getAllUserPkg);
 
 router.get("/points/:location", PointController.getAllPPP);
 router.get("/points/", PointController.getAllPPP);
+
+router.get("/users/:username",UserController.getUserByName)
+router.get("/user",UserController.getSelf)
+router.get("/user/:id",UserController.getById)
 
 export default router;
