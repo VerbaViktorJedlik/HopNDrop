@@ -34,7 +34,7 @@ export class UserController{
 
     static async getSelf(req: Request, res: Response, next: NextFunction): Promise<void> {
         
-        const userFromToken = await AuthController.validateUser(req, res);
+        const userFromToken = await AuthController.validateUser(req);
         if (!userFromToken) {
             
             const response: GetUserResponse = {
