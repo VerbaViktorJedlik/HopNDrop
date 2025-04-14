@@ -8,19 +8,17 @@ import {
 
 export default [
   index("./routes/home.tsx"),
-  route("about", "./routes/about.tsx"),
 
   // a layout minden benne lévő route-on lerenderelődik.
-  layout("./routes/auth/layout.tsx", [
+  layout("./routes/globalLayout.tsx", [
+    layout("./routes/main/layout.tsx", [
+      route("pickup", "./routes/main/pickup.tsx"),
+      route("send", "./routes/main/send.tsx"),
+      route("profile", "./routes/main/profile.tsx"),
+    ]),
     route("login", "./routes/auth/login.tsx"),
     route("register", "./routes/auth/register.tsx"),
-  ]),
-
-  ...prefix("concerts", [
-    // Ez prefixeli, hogy a lent lévők mind concerts el kezdődik
-    index("./routes/concerts/home.tsx"), // ez igy tehat a /concerts
-    route(":city", "./routes/concerts/city.tsx"), // dinamikus utvonal /concerts/:city a :city-t megkapja parameterkent az oldal params kent
-    route("trending", "./routes/concerts/trending.tsx"),
+    route("tracker", "./routes/main/tracker.tsx"),
   ]),
 
   ...prefix("tutorial", [
