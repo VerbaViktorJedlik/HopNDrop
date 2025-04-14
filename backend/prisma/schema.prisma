@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Package {
+  id          String      @id @default(uuid())
+  fromP       PickUpPoint @relation("fromP", fields: [fromPId], references: [id])
+  fromPId     String
+  toP         PickUpPoint @relation("toP", fields: [toPId], references: [id])
+  toPId       String
+  fromU       User        @relation("fromU", fields: [fromUId], references: [id])
+  fromUId     String
+  toU         User        @relation("toU", fields: [toUId], references: [id])
+  toUId       String
+  deliveryU   User?        @relation("deliveryU", fields: [deliveryUId], references: [id])
+  deliveryUId String?
+}
+
+model PickUpPoint {
+  id           String    @id @default(uuid())
+  location     String    @unique
+  fromPackages Package[] @relation("fromP")
+  toPackages   Package[] @relation("toP")
+}
+
+model User {
+  id                 String    @id @default(uuid())
+  username           String    @unique
+  password           String
+  balance            Float     @default(0)
+  sendingPackages    Package[] @relation("fromU")
+  recievingPackages  Package[] @relation("toU")
+  deliveringPackages Package[] @relation("deliveryU")
+}

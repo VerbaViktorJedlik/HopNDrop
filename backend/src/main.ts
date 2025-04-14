@@ -1,6 +1,8 @@
 import express from "express"
 import routes from "./routes"
+import { PrismaClient } from "@prisma/client";
 
+export const prisma = new PrismaClient();
 
 const connectionString = "mongodb://localhost:27017/friends"
 
