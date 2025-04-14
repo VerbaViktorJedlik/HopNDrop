@@ -8,6 +8,7 @@ export type PublicSelf = PublicUser & {
     jwt: string
 }
 
-export type AuthResponse = (PublicSelf & {
+export type AuthResponse = {
+    self: PublicSelf,
     result: "Success"
-}) | {result: "Error", msg: string}
+} | {result: "Error", msg: string}
