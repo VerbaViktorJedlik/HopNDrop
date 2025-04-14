@@ -1,9 +1,9 @@
-import { AuthResponse, PublicSelf, TokenVerifyResponse } from "@common";
+import { AuthResponse, PublicSelf, PublicUser, TokenVerifyResponse } from "@common";
 import { ConfigService } from "./config.service";
 
 export class AuthService{
 
-    static async registerUser(username:string,password:string): Promise<PublicSelf | null>{
+    static async registerUser(username:string,password:string): Promise<PublicUser | null>{
         try {
             const response = await fetch("http://localhost:3000/api/auth/register",{
                 method: "POST",
@@ -15,8 +15,8 @@ export class AuthService{
     
             const result: AuthResponse = await response.json()
             if (result.result == "Success") {
-                ConfigService.setToken(result.self.jwt)
-                return result.self
+                ConfigService.setToken(result.jwt)
+                return result.self;
             }
     
             return null
@@ -26,7 +26,7 @@ export class AuthService{
         }
     }
 
-    static async login(username:string,password:string): Promise<PublicSelf | null>{
+    static async login(username:string,password:string): Promise<PublicUser | null>{
         try {
             const response = await fetch("http://localhost:3000/api/auth/login",{
                 method: "POST",
@@ -38,7 +38,7 @@ export class AuthService{
     
             const result: AuthResponse = await response.json()
             if (result.result == "Success") {
-                ConfigService.setToken(result.self.jwt)
+                ConfigService.setToken(result.jwt)
                 return result.self;
             }
     
@@ -70,6 +70,5 @@ export class AuthService{
             console.log(error)
             return false
         }
-
     }
 }
