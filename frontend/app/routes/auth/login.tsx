@@ -23,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { Link } from "react-router";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -81,18 +82,21 @@ export function login() {
                   </FormItem>
                 )}
               />
-              <Button variant="outline">
-                <a href="/auth/register">Regisztráció</a>
+              <Button variant="outline" className="hover:cursor-pointer">
+                <Link to="/register">Regisztráció</Link>
               </Button>
-              <Button type="submit" className="float-right hover:cursor-pointer">
+              <Button
+                type="submit"
+                className="float-right hover:cursor-pointer"
+              >
                 Bejelentkezés
               </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
-      <Button>
-        <a href="/auth/tracker">Csomag nyomonkövetése</a>
+      <Button className="hover:cursor-pointer">
+        <Link to="/tracker">Csomag nyomonkövetése</Link>
       </Button>
     </div>
   );
