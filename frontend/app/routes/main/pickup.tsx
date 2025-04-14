@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { MoveLeft } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Link } from "react-router";
+import { PackageService } from "~/services/package.service";
 
 const packagePoint: PublicPPP = {
   id: "asd",
@@ -16,27 +17,17 @@ const user: PublicUser = {
   username: "userName",
 };
 
-const packages: PublicPackage[] = [
-  {
-    id: "id",
-    fromP: packagePoint,
-    toP: packagePoint,
-    fromU: user,
-    toU: user,
-    deliveryU: user,
-    price: 400,
-    reward: 450,
-
-    status: "Waiting",
-  },
-];
+const packages: PublicPackage[] | null = await PackageService.GetAllPackages();
 
 function pickup() {
   return (
     <div>
       <div className="fixed left-8 top-8">
         <Link to="/profile">
-          <Button className="flex cursor-pointer" variant={"outline"}>
+          <Button
+            className="flex cursor-pointer hover:cursor-pointer"
+            variant={"outline"}
+          >
             <MoveLeft />
             <span>Vissza a főoldalra</span>
           </Button>
@@ -48,7 +39,11 @@ function pickup() {
             <CardTitle>Csomag szállításának elvállalása</CardTitle>
           </CardHeader>
           <CardContent>
-            <PickupTable packages={packages} />
+            {
+              packages ?
+                <PickupTable packages={packages} />
+                : <div className="text-center">Nincsenek elérhető csomagok</div>
+            }
           </CardContent>
         </Card>
       </div>
