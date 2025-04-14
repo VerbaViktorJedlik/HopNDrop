@@ -3,6 +3,7 @@ import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import { prisma } from "../main";
 import { NextFunction, Request, Response } from "express";
+import { JWTDecode } from "../types/jwtDecode";
 
 // TODO: Replace this with a proper environment variable
 const jwtSecret = "asd"; // This should ideally be stored in an environment variable for security
@@ -107,6 +108,19 @@ export class AuthController {
             console.error(error);
             res.status(500).json({ message: "Hiba történt a regisztráció során!" }); // "An error occurred during registration!"
             return;
+        }
+    }
+
+    static async validateUser(req: Request, res: Response){
+        const token = req.headers.authorization?.split(" ").pop()
+        if (!token){
+            return undefined
+        }
+        try {
+            const decoded: JWTDecode = jwt.verify(token, jwtSecret) as JWTDecode;
+            return decoded.user;
+        } catch (error) {
+            return undefined;
         }
     }
 }
