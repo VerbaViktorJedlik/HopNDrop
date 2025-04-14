@@ -78,11 +78,13 @@ export async function findPackage(id?: string) {
 
 export async function updatePackage(pkg: Partial<Package> & {id: string}) {
     try {
-        const upodatedPkg = await prisma.package.update({
+        const updatedPkg = await prisma.package.update({
             where: {
                 id: pkg.id,
             },
-            data: pkg,
+            data: {
+                ...pkg
+            },
             include:{
                 fromU:true,
                 toU:true,
@@ -92,7 +94,7 @@ export async function updatePackage(pkg: Partial<Package> & {id: string}) {
             }
         });
 
-        return upodatedPkg;
+        return updatedPkg;
     }
     catch(error) {
         console.error(error);

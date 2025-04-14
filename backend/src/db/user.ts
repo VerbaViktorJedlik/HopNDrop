@@ -40,3 +40,36 @@ export async function createUser(username: string, password: string, ): Promise<
         return null;
     }
 }
+
+export async function findUser(id?: string) {
+    try {
+        const pkg = await prisma.user.findMany({
+            where: {
+                id,
+            }
+        });
+
+        return pkg;
+    }
+    catch(error) {
+        console.error(error);
+        return null
+    }
+}
+
+export async function updateUser(user: Partial<User> & {id: string}) {
+    try {
+        const updatedUser = await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: user
+        });
+
+        return updatedUser;
+    }
+    catch(error) {
+        console.error(error);
+        return null
+    }
+}

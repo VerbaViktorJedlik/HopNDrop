@@ -144,15 +144,17 @@ export class AuthController {
         }
     }
 
-    static async validateUser(req: Request, res: Response){
+    static validateUser(req: Request): PublicUser | undefined {
         const token = req.headers.authorization?.split(" ").pop()
         if (!token){
+            console.log("no token");
             return undefined
         }
         try {
             const decoded: JWTDecode = jwt.verify(token, jwtSecret) as JWTDecode;
             return decoded.user;
         } catch (error) {
+            console.log(error);
             return undefined;
         }
     }
