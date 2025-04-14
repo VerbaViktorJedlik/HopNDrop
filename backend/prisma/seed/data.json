@@ -1,0 +1,96 @@
+{
+    "users": [
+      {
+        "id": "user1",
+        "username": "john_doe",
+        "password": "hashed_password_1",
+        "balance": 100
+      },
+      {
+        "id": "user2",
+        "username": "jane_smith",
+        "password": "hashed_password_2",
+        "balance": 250
+      },
+      {
+        "id": "user3",
+        "username": "mike_jones",
+        "password": "hashed_password_3",
+        "balance": 75
+      },
+      {
+        "id": "user4",
+        "username": "sarah_williams",
+        "password": "hashed_password_4",
+        "balance": 300
+      }
+    ],
+    "ppps": [
+      {
+        "id": "ppp1",
+        "location": "Central Station, Main Hall"
+      },
+      {
+        "id": "ppp2",
+        "location": "University Campus, Library Entrance"
+      },
+      {
+        "id": "ppp3",
+        "location": "Shopping Mall, North Entrance"
+      },
+      {
+        "id": "ppp4",
+        "location": "City Park, Main Gate"
+      },
+      {
+        "id": "ppp5",
+        "location": "Business District, Tower A Lobby"
+      }
+    ],
+    "packages": [
+      {
+        "id": "pkg1",
+        "fromP": 0,
+        "toP": 1,
+        "fromU": 0,
+        "toU": 1,
+        "deliveryU": 2,
+        "price": 15,
+        "reward": 5,
+        "status": "Completed"
+      },
+      {
+        "id": "pkg2",
+        "fromP": 2,
+        "toP": 3,
+        "fromU": 1,
+        "toU": 3,
+        "deliveryU": 0,
+        "price": 20,
+        "reward": 7,
+        "status": "En Route"
+      },
+      {
+        "id": "pkg3",
+        "fromP": 4,
+        "toP": 0,
+        "fromU": 3,
+        "toU": 2,
+        "deliveryU": 1,
+        "price": 12,
+        "reward": 4,
+        "status": "Delivered"
+      },
+      {
+        "id": "pkg4",
+        "fromP": 1,
+        "toP": 4,
+        "fromU": 2,
+        "toU": 0,
+        "deliveryU": null,
+        "price": 18,
+        "reward": 6,
+        "status": "Waiting"
+      }
+    ]
+  }
