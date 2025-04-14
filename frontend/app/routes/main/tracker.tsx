@@ -6,24 +6,17 @@ import { Button } from "../../components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "../../components/ui/form";
 import { Input } from "../../components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
 import { Link } from "react-router";
 import { MoveLeft } from "lucide-react";
+import { useState } from "react";
 
 const formSchema = z.object({
   packageId: z.string().min(2, {
@@ -32,6 +25,8 @@ const formSchema = z.object({
 });
 
 function tracker() {
+  const [showPackageInfo, togglePackageInfo] = useState<boolean>(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -86,32 +81,34 @@ function tracker() {
               </Button>
             </form>
           </Form>
-          <div className="float-left">
-            <div className="flex gap-4">
-              <h4>Feladó:</h4>
-              <p>{pkg.fromU}</p>
+          {showPackageInfo && (
+            <div className="float-left">
+              <div className="flex gap-4">
+                <h4>Feladó:</h4>
+                <p>{pkg.fromU}</p>
+              </div>
+              <Separator className="my-2" />
+              <div className="flex gap-4">
+                <h4>Feladó cím:</h4>
+                <p>{pkg.fromP}</p>
+              </div>
+              <Separator className="my-2" />
+              <div className="flex gap-4">
+                <h4>Futár:</h4>
+                <p>{pkg.deliveryU}</p>
+              </div>
+              <Separator className="my-2" />
+              <div className="flex gap-4">
+                <h4>Érték:</h4>
+                <p>{pkg.price}</p>
+              </div>
+              <Separator className="my-2" />
+              <div className="flex gap-4">
+                <h4>Státusz:</h4>
+                <p>{pkg.status}</p>
+              </div>
             </div>
-            <Separator className="my-2" />
-            <div className="flex gap-4">
-              <h4>Feladó cím:</h4>
-              <p>{pkg.fromP}</p>
-            </div>
-            <Separator className="my-2" />
-            <div className="flex gap-4">
-              <h4>Futár:</h4>
-              <p>{pkg.deliveryU}</p>
-            </div>
-            <Separator className="my-2" />
-            <div className="flex gap-4">
-              <h4>Érték:</h4>
-              <p>{pkg.price}</p>
-            </div>
-            <Separator className="my-2" />
-            <div className="flex gap-4">
-              <h4>Státusz:</h4>
-              <p>{pkg.status}</p>
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>
