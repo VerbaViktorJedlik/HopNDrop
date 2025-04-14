@@ -1,4 +1,4 @@
-import { AuthResponse, PublicUser } from "@common";
+import { AuthResponse, PublicSelf, PublicUser } from "@common";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import { prisma } from "../main";
@@ -25,23 +25,21 @@ export class AuthController {
         const password: string = req.body!.password;
 
         if (!username || !password) {
-            res.status(400).json({
+            const errorResponse: AuthResponse = {
                 result: "Error",
                 msg: "'username' and 'password' are required!" 
-            }); // "Username and password are required!"
+            };
+            res.status(400).json(errorResponse); // "Username and password are required!"
             return;
         }
 
         try {
             // Find user by username
-            const existingUser = await prisma.user.findUniqueOrThrow({
+            const existingUser = await prisma.user.findUnique({
                 where: { username }
             });
 
-            // Compare the password with the hashed password in the database
-            const validPassword = await bcrypt.compare(password, existingUser.password);
-
-            if (!validPassword) {
+            if (!existingUser) {
                 res.status(400).json({
                     result: "Error",
                     msg: "Incorrect username or password!" 
@@ -49,11 +47,23 @@ export class AuthController {
                 return;
             }
 
+            // Compare the password with the hashed password in the database
+            const validPassword = await bcrypt.compare(password, existingUser.password);
+
+            if (!validPassword) {
+                const errorResponse: AuthResponse = {
+                    result: "Error",
+                    msg: "Incorrect username or password!" 
+                };
+                res.status(400).json(errorResponse); // "Invalid username or password!"
+                return;
+            }
+
             // Generate JWT
             const jwtToken = AuthController.generateJWT(existingUser);
 
             const response: AuthResponse = {
-                ...existingUser,
+                self: existingUser,
                 result: "Success",
                 jwt: jwtToken
             }
@@ -63,10 +73,11 @@ export class AuthController {
             return;
         } catch (error) {
             console.error(error);
-            res.status(500).json({
+            const errorResponse: AuthResponse = {
                 result: "Error",
                 msg: "An error occured during login!" 
-            }); // "An error occurred during login!"
+            }
+            res.status(500).json(errorResponse); // "An error occurred during login!"
             return;
         }
     }
@@ -77,10 +88,11 @@ export class AuthController {
         const password: string = req.body!.password;
 
         if (!username || !password) {
-            res.status(400).json({
+            const errorResponse: AuthResponse = {
                 result: "Error",
                 msg: "'username' and 'password' are required!" 
-            }); // "Username and password are required!"
+            };
+            res.status(400).json(errorResponse); // "Username and password are required!"
             return;
         }
 
@@ -113,7 +125,7 @@ export class AuthController {
             const jwtToken = AuthController.generateJWT(newUser);
 
             const response: AuthResponse = {
-                ...newUser,
+                self: newUser,
                 result: "Success",
                 jwt: jwtToken
             }
@@ -123,10 +135,11 @@ export class AuthController {
             return;
         } catch (error) {
             console.error(error);
-            res.status(500).json({
+            const errorResponse: AuthResponse = {
                 result: "Error",
                 msg: "An error occured during registration!" 
-            }); // "An error occurred during registration!"
+            }
+            res.status(500).json(errorResponse); // "An error occurred during registration!"
             return;
         }
     }
@@ -141,6 +154,23 @@ export class AuthController {
             return decoded.user;
         } catch (error) {
             return undefined;
+        }
+    }
+
+    static async validateToken(req: Request, res:Response): Promise<void>{
+        const token = req.headers.authorization?.split(" ").pop()
+        if (!token){
+            res.status(400).json({result: "Error",msg: "No token sent"})
+            return
+        }
+        try {
+            const decoded: JWTDecode = jwt.verify(token, jwtSecret) as JWTDecode;
+
+            res.status(200).json("Success")
+            return 
+        } catch (error) {
+            res.status(400).json("Error")
+            return 
         }
     }
 }

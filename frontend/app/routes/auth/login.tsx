@@ -8,7 +8,6 @@ import { Button } from "../../components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,8 +17,6 @@ import { Input } from "../../components/ui/input";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -31,12 +28,14 @@ import { Loader2 } from "lucide-react";
 import { Label } from "~/components/ui/label";
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
-  }),
+  username: z.string(),
+  //   .min(2, {
+  //   message: "Username must be at least 2 characters.",
+  // }),
+  password: z.string(),
+  // .min(6, {
+  //   message: "Password must be at least 6 characters.",
+  // }),
 });
 
 export function login() {
