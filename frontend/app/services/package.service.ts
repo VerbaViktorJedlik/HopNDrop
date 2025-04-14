@@ -117,4 +117,36 @@ export class PackageService {
       return null;
     }
   }
+
+  static async AddPackage(
+    toUId: string,
+    fromPId: string,
+    toPId: string,
+    price: number
+  ): Promise<PublicPackage | null> {
+    try {
+      const response = await fetch(`${ConfigService.apiUrl}/package`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: ConfigService.getToken()!,
+        },
+        body: JSON.stringify({
+          toUId: toUId,
+          fromPId: fromPId,
+          toPId: toPId,
+          price: price,
+        }),
+      });
+      const result: PackageResponse = await response.json();
+      if (result.result == "Success") {
+        return result.package;
+      }
+      console.log(result.msg);
+      return null;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 }

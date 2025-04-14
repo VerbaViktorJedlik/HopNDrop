@@ -16,8 +16,8 @@ export class PackageController {
         return;
       }
       const user = (await findUserById(reqUser.id))!;
-      const { toUId, fromPId, toPId, price, reward } = req.body;
-      if (!toUId || !fromPId || !toPId || !price || !reward) {
+      const { toUId, fromPId, toPId, price } = req.body;
+      if (!toUId || !fromPId || !toPId || !price) {
         res.status(400).json({ result: "Error", msg: "Missing fields" });
         return;
       }

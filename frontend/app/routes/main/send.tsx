@@ -33,10 +33,7 @@ const formSchema = z.object({
   to: z.string().min(2, {
     message: "Ez a mező kötelező.",
   }),
-  price: z
-    .string()
-    .regex(/^\d+$/, { message: "The price must contain only numbers." })
-    .min(4, { message: "minimum 1000Ft értéknek kell lennie" }),
+  price: z.string().min(1),
 });
 function send() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -48,8 +45,14 @@ function send() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
+    const send = await PackageService.AddPackage(
+      values.to,
+      values.from,
+      values.to,
+      Number(values.price)
+    );
   };
 
   return (
@@ -136,7 +139,7 @@ function send() {
                     <FormItem>
                       <FormLabel>Csomag értéke</FormLabel>
                       <FormControl>
-                        <Input placeholder="12345" {...field} />
+                        <Input type="number" placeholder="12345" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
