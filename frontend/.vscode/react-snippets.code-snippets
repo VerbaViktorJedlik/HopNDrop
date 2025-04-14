@@ -1,0 +1,61 @@
+{
+  "component": {
+    "prefix": "component",
+    "body": [
+      "function ${1:ComponentName}() {",
+      "  return (",
+      "    <div>${1:ComponentName}</div>",
+      "  )",
+      "}",
+      "export default ${1:ComponentName}"
+    ],
+    "description": "component"
+  },
+
+  "componentProps": {
+    "prefix": "componentProps",
+    "body": [
+      "interface ${1:ComponentName}Props {",
+      "  ${2:example}: ${3:string}",
+      "}",
+      "",
+      "function ${1:ComponentName}({${2:example}}: ${1:ComponentName}Props) {",
+      "  return <div>${1:ComponentName} prop: {${2:example}}</div>;",
+      "}",
+      "export default ${1:ComponentName};"
+    ],
+    "description": "componentProps"
+  },
+
+  "useState snippet": {
+    "prefix": "useState",
+    "body": [
+      "const [${1:stateName}, set${2:StateName}] = useState<${3:type}>(${4:startValue});"
+    ],
+    "description": "React useState hook"
+  },
+
+  "bspan": {
+    "prefix": "bspan",
+    "body": ["<span className=\"font-bold\">${1:Text}</span>"],
+    "description": "bspan"
+  },
+
+  "immer": {
+    "prefix": "immer",
+    "body": [
+      "${1:setState}(",
+      "  produce((draft) => {",
+      "    draft.${2:}",
+      "  })",
+      ");"
+    ],
+    "description": "immer"
+  },
+
+  "useEffect": {
+    "prefix": "useEffect",
+    "body": ["useEffect(() => {", "  ${3:}", "}, [])"],
+    "description": "useEffect"
+  }
+}
