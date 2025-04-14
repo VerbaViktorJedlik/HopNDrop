@@ -5,10 +5,7 @@ export type PublicUser = {
 
 export type PublicSelf = PublicUser & {
     balance: Number,
-    jwt: string
 }
 
-export type AuthResponse = {
-    self: PublicSelf,
-    result: "Success"
-} | {result: "Error", msg: string}
+export type AuthResponse = ({result: "Success", self: PublicUser, jwt: string}) | {result: "Error", msg: string}
+export type GetUserResponse = ({result: "Success", self: PublicUser}) | {result: "Error", msg: string}

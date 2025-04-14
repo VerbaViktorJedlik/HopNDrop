@@ -25,10 +25,11 @@ export class AuthController {
         const password: string = req.body!.password;
 
         if (!username || !password) {
-            res.status(400).json({
+            const errorResponse: AuthResponse = {
                 result: "Error",
                 msg: "'username' and 'password' are required!" 
-            }); // "Username and password are required!"
+            };
+            res.status(400).json(errorResponse); // "Username and password are required!"
             return;
         }
 
@@ -42,10 +43,11 @@ export class AuthController {
             const validPassword = await bcrypt.compare(password, existingUser.password);
 
             if (!validPassword) {
-                res.status(400).json({
+                const errorResponse: AuthResponse = {
                     result: "Error",
                     msg: "Incorrect username or password!" 
-                }); // "Invalid username or password!"
+                };
+                res.status(400).json(errorResponse); // "Invalid username or password!"
                 return;
             }
 
@@ -53,7 +55,7 @@ export class AuthController {
             const jwtToken = AuthController.generateJWT(existingUser);
 
             const response: AuthResponse = {
-                ...existingUser,
+                self: existingUser,
                 result: "Success",
                 jwt: jwtToken
             }
@@ -63,10 +65,11 @@ export class AuthController {
             return;
         } catch (error) {
             console.error(error);
-            res.status(500).json({
+            const errorResponse: AuthResponse = {
                 result: "Error",
                 msg: "An error occured during login!" 
-            }); // "An error occurred during login!"
+            }
+            res.status(500).json(errorResponse); // "An error occurred during login!"
             return;
         }
     }
@@ -77,10 +80,11 @@ export class AuthController {
         const password: string = req.body!.password;
 
         if (!username || !password) {
-            res.status(400).json({
+            const errorResponse: AuthResponse = {
                 result: "Error",
                 msg: "'username' and 'password' are required!" 
-            }); // "Username and password are required!"
+            };
+            res.status(400).json(errorResponse); // "Username and password are required!"
             return;
         }
 
@@ -113,7 +117,7 @@ export class AuthController {
             const jwtToken = AuthController.generateJWT(newUser);
 
             const response: AuthResponse = {
-                ...newUser,
+                self: newUser,
                 result: "Success",
                 jwt: jwtToken
             }
@@ -123,10 +127,11 @@ export class AuthController {
             return;
         } catch (error) {
             console.error(error);
-            res.status(500).json({
+            const errorResponse: AuthResponse = {
                 result: "Error",
                 msg: "An error occured during registration!" 
-            }); // "An error occurred during registration!"
+            }
+            res.status(500).json(errorResponse); // "An error occurred during registration!"
             return;
         }
     }
