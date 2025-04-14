@@ -12,33 +12,20 @@ import { Button } from "~/components/ui/button";
 import { PublicPackage } from "@common";
 import { PublicUser } from "@common";
 import { PublicPPP } from "@common";
-
+import { PackageService } from "~/services/package.service";
+import { use, useEffect } from "react";
 export function PostageTable() {
-  const exampleUser: PublicUser = {
-    id: "user1",
-    username: "john_doe",
-  };
+  const postages = PackageService.GetAllUserPackages(.id);
 
-  // Example data for PublicPPP
-  const examplePPP: PublicPPP = {
-    id: "ppp1",
-    location: "123 Main St, Springfield",
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await PackageService.GetAllUserPackages(.id);
+      setPostages(data);
+    };
+    fetchData();
+  }, []);
 
-  // Example data for PublicPackage
-  const postages: PublicPackage[] = [
-    {
-      id: "package1",
-      fromP: examplePPP,
-      toP: examplePPP,
-      fromU: exampleUser,
-      toU: exampleUser,
-      deliveryU: exampleUser,
-      price: 100,
-      reward: 10,
-      status: "Waiting",
-    },
-  ];
+
   return (
     <Table>
       <TableCaption>Aktuális Küldeményeid</TableCaption>
