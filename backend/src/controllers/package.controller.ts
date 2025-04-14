@@ -171,4 +171,24 @@ export class PackageController {
     }
     res.status(200).json({ result: "Success", packages: pkgs });
   }
+
+  static async getAllUserPkg(
+    req: Request<{ id: string }>,
+    res: Response<FindPackageResponse>
+  ) {
+    try {
+      let pkgs = await findPackage();
+
+      pkgs = pkgs!.filter(
+        (p) =>
+          p.deliveryUId == req.params.id ||
+          p.fromUId == req.params.id ||
+          p.toUId == req.params.id
+      );
+
+      res.status(200).json({ result: "Success", packages: pkgs });
+    } catch (error) {
+      res.status(500);
+    }
+  }
 }
