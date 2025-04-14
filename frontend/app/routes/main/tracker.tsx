@@ -38,6 +38,7 @@ function tracker() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const pkgasd = await PackageService.GetPackageById(values.packageId);
+    console.log(pkgasd);
     setpkg(pkgasd);
   };
 

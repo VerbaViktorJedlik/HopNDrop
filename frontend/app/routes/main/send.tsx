@@ -23,6 +23,8 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { PackageService } from "~/services/package.service";
+import { Link } from "react-router";
+import { MoveLeft } from "lucide-react";
 
 const formSchema = z.object({
   from: z.string().min(2, {
@@ -51,95 +53,106 @@ function send() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-      <Card className="w-[350px] ">
-        <CardHeader className="flex justify-center">
-          <CardTitle>Küldemény Feladása</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="from"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Honnan?</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+    <div>
+      <div className="fixed left-8 top-8">
+        <Link to="/profile">
+          <Button className="flex cursor-pointer" variant={"outline"}>
+            <MoveLeft />
+            <span>Vissza a főoldalra</span>
+          </Button>
+        </Link>
+      </div>
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <Card className="w-[350px] ">
+          <CardHeader className="flex justify-center">
+            <CardTitle>Küldemény Feladása</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8"
+              >
+                <FormField
+                  control={form.control}
+                  name="from"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Honnan?</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Válassz egy autómatát" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="m@example.com">
+                            RAAAAAAAAAH
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Ebbe az automatába kell betenned a csomagot.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="to"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Hova?</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Válassz egy autómatát" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="m@example.com">
+                            RAAAAAAAAAH
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Ebbe az automatába fog megérkezni a csomagot.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Csomag értéke</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Válassz egy autómatát" />
-                        </SelectTrigger>
+                        <Input placeholder="12345" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="m@example.com">
-                          RAAAAAAAAAH
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      Ebbe az automatába kell betenned a csomagot.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="to"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Hova?</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Válassz egy autómatát" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="m@example.com">
-                          RAAAAAAAAAH
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      Ebbe az automatába fog megérkezni a csomagot.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Csomag értéke</FormLabel>
-                    <FormControl>
-                      <Input placeholder="12345" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="buttons flex justify-center gap-7">
-                <Button variant={"outline"} type="submit">
-                  Feladás
-                </Button>
-                <Button>
-                  <a href="/profile">Mégse</a>
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="buttons flex justify-center gap-7">
+                  <Button type="submit">Feladás</Button>
+                  <Button variant={"outline"}>
+                    <a href="/profile">Mégse</a>
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
