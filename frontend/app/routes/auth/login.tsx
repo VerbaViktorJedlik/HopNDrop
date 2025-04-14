@@ -14,13 +14,13 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 import { Input } from "../../components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import { Link } from "react-router";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Link, useNavigate } from "react-router";
+import { AuthService } from "~/services/auth.service";
+import { ConfigService } from "~/services/config.service";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { Label } from "~/components/ui/label";
 
 const formSchema = z.object({
   username: z.string(),
@@ -34,6 +34,9 @@ const formSchema = z.object({
 });
 
 export function login() {
+  const navigate = useNavigate();
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,8 +45,28 @@ export function login() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  useEffect(() => {
+    setError("");
+  }, [form]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
+    setLoading(true);
+    try {
+      const self = await AuthService.login(values.username, values.password);
+      if (!self) {
+        console.log("A bejelentkezés sikertelen");
+        setError("A bejelentkezés sikertelen");
+        setLoading(false);
+        return;
+      }
+      navigate("/profile");
+      setLoading(false);
+    } catch (error) {
+      console.log("Nem sikerült az api hívás");
+      setError("Nem sikerült az api hívás");
+      setLoading(false);
+    }
   };
 
   return (
@@ -62,7 +85,7 @@ export function login() {
                   <FormItem>
                     <FormLabel>Felhasználónév</FormLabel>
                     <FormControl>
-                      <Input placeholder="your name" {...field} />
+                      <Input placeholder="gipsz_jakab" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -75,12 +98,17 @@ export function login() {
                   <FormItem>
                     <FormLabel>Jelszó</FormLabel>
                     <FormControl>
-                      <Input placeholder="your password" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="gipszjakab123"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              {error && <Label className="text-destructive">{error}</Label>}
               <Button variant="outline" className="hover:cursor-pointer">
                 <Link to="/register">Regisztráció</Link>
               </Button>
@@ -96,6 +124,7 @@ export function login() {
       </Card>
       <Button className="hover:cursor-pointer">
         <Link to="/tracker">Csomag nyomonkövetése</Link>
+        {loading && <Loader2 className="animate-spin" />}
       </Button>
     </div>
   );

@@ -34,6 +34,7 @@ model Package {
 model PickUpPoint {
   id           String    @id @default(uuid())
   location     String    @unique
+  name         String
   fromPackages Package[] @relation("fromP")
   toPackages   Package[] @relation("toP")
 }

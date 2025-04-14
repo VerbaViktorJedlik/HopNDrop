@@ -3,7 +3,7 @@ import { prisma } from "../main";
 
 /**
  * Creates a new package with automatic UUID and default 'Waiting' status
- * 
+ *
  * @param fromUId - ID of the user sending the package (must exist in User table)
  * @param toUId - ID of the user receiving the package (must exist in User table)
  * @param fromPId - ID of origin pickup point (must exist in PickUpPoint table)
@@ -16,7 +16,7 @@ import { prisma } from "../main";
  * @throws {Prisma.PrismaClientKnownRequestError}
  *          - P2003: Foreign key constraint violation (invalid ID reference)
  *          - Other database errors
- * 
+ *
  * @relatedModel Package
  * @relationFields
  * - Connects to User through:
@@ -31,49 +31,61 @@ import { prisma } from "../main";
  * - deliveryUId: null
  * - id: auto-generated UUID
  */
-export async function createPackage(fromUId: string, toUId: string, fromPId: string, toPId: string, price: number, reward: number): Promise<Package | null> {
-    try {
-        const pkg = await prisma.package.create({
-            data: {
-                fromUId,
-                toUId,
-                fromPId,
-                toPId,
-                price,
-                reward,
-            }
-        });
+export async function createPackage(
+  fromUId: string,
+  toUId: string,
+  fromPId: string,
+  toPId: string,
+  price: number,
+  reward: number
+) {
+  try {
+    const pkg = await prisma.package.create({
+      data: {
+        fromUId,
+        toUId,
+        fromPId,
+        toPId,
+        price,
+        reward,
+      },
+      include: {
+        fromU: true,
+        toU: true,
+        toP: true,
+        fromP: true,
+        deliveryU: true,
+      },
+    });
 
-        return pkg;
-    }
-    catch(error) {
-        console.error(error);
+    return pkg;
+  } catch (error) {
+    console.error(error);
 
-        return null;
-    }
+    return null;
+  }
 }
 
 export async function findPackage(id?: string) {
-    try {
-        const pkg = await prisma.package.findMany({
-            where: {
-                id,
-            },
-            include:{
-                fromU:true,
-                toU:true,
-                toP: true,
-                fromP: true,
-                deliveryU: true
-            }
-        });
+  try {
+    const pkg = await prisma.package.findMany({
+      where: {
+        id,
+      },
+      include: {
+        fromU: true,
+        toU: true,
+        toP: true,
+        fromP: true,
+        deliveryU: true,
+      },
+    });
 
-        return pkg;
-    }
-    catch(error) {
-        console.error(error);
-        return null
-    }
+    return pkg;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
 export async function updatePackage(pkg: Partial<Package> & {id: string}) {

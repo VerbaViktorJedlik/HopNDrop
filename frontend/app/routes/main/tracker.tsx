@@ -17,15 +17,15 @@ import { Separator } from "~/components/ui/separator";
 import { Link } from "react-router";
 import { MoveLeft } from "lucide-react";
 import { useState } from "react";
+import { PublicPackage } from "@common";
+import { PackageService } from "~/services/package.service";
 
 const formSchema = z.object({
-  packageId: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  packageId: z.string()
 });
 
 function tracker() {
-  const [showPackageInfo, togglePackageInfo] = useState<boolean>(false);
+  const [pkg, setpkg] = useState<PublicPackage | null>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,24 +34,21 @@ function tracker() {
     },
   });
 
-  const pkg = {
-    id: "id",
-    fromP: "Feladó box címe",
-    fromU: "Feladó neve",
-    deliveryU: "Futár neve",
-    price: 123,
-    status: "Waiting",
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const pkgasd = await PackageService.GetPackageById(values.packageId);
+    setpkg(pkgasd);
   };
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {};
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-4">
       <Link
         to="/login"
-        className="flex items-center gap-2 text-sm transition-colors duration-200 group hover:cursor-pointer"
+        className="flex items-center gap-2 text-sm transition-colors duration-200 group"
       >
-        <Button variant={"outline"} className="absolute top-4 left-4">
+        <Button
+          variant={"outline"}
+          className="absolute top-4 left-4 hover:cursor-pointer"
+        >
           <MoveLeft className="h-4 w-4" />
           <span>Vissza a belépéshez</span>
         </Button>
@@ -70,7 +67,11 @@ function tracker() {
                   <FormItem>
                     <FormLabel>Csomag azonosító</FormLabel>
                     <FormControl>
-                      <Input placeholder="package id" {...field} />
+                      <Input
+                        type="text"
+                        placeholder="36 jegyű azonosító"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -81,26 +82,26 @@ function tracker() {
               </Button>
             </form>
           </Form>
-          {showPackageInfo && (
+          {pkg && (
             <div className="float-left">
               <div className="flex gap-4">
                 <h4>Feladó:</h4>
-                <p>{pkg.fromU}</p>
+                <p>{pkg.fromU.username}</p>
               </div>
               <Separator className="my-2" />
               <div className="flex gap-4">
                 <h4>Feladó cím:</h4>
-                <p>{pkg.fromP}</p>
+                <p>{pkg.fromP.location}</p>
               </div>
               <Separator className="my-2" />
               <div className="flex gap-4">
                 <h4>Futár:</h4>
-                <p>{pkg.deliveryU}</p>
+                <p>{pkg.deliveryU?.username}</p>
               </div>
               <Separator className="my-2" />
               <div className="flex gap-4">
                 <h4>Érték:</h4>
-                <p>{pkg.price}</p>
+                <p>{pkg.price.toString()}</p>
               </div>
               <Separator className="my-2" />
               <div className="flex gap-4">

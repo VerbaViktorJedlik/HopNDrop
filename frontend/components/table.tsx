@@ -12,33 +12,21 @@ import { Button } from "~/components/ui/button";
 import { PublicPackage } from "@common";
 import { PublicUser } from "@common";
 import { PublicPPP } from "@common";
-
+import { PackageService } from "~/services/package.service";
+import { use, useEffect, useState } from "react";
+import { UserService } from "~/services/user.service";
 export function PostageTable() {
-  const exampleUser: PublicUser = {
-    id: "user1",
-    username: "john_doe",
-  };
+  const [postages, setPostages] = useState<PublicPackage[] | null>();
 
-  // Example data for PublicPPP
-  const examplePPP: PublicPPP = {
-    id: "ppp1",
-    location: "123 Main St, Springfield",
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const loggedInUser = await UserService.getSelf();
+      const data = await PackageService.GetAllUserPackages(loggedInUser?.id!);
+      setPostages(data);
+    };
+    fetchData();
+  }, []);
 
-  // Example data for PublicPackage
-  const postages: PublicPackage[] = [
-    {
-      id: "package1",
-      fromP: examplePPP,
-      toP: examplePPP,
-      fromU: exampleUser,
-      toU: exampleUser,
-      deliveryU: exampleUser,
-      price: 100,
-      reward: 10,
-      status: "Waiting",
-    },
-  ];
   return (
     <Table>
       <TableCaption>Aktuális Küldeményeid</TableCaption>
@@ -52,20 +40,21 @@ export function PostageTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {postages.map((postage) => (
-          <TableRow key={postage.id}>
-            <TableCell className="font-medium">
-              {postage.fromP.location}
-            </TableCell>
-            <TableCell>{postage.toP.location}</TableCell>
-            <TableCell>{postage.status}</TableCell>
-            <TableCell>{postage.price.toString()}</TableCell>
-            <TableCell>{postage.reward.toString()}</TableCell>
-            <TableCell className="text-right">
-              <button>asd</button>
-            </TableCell>
-          </TableRow>
-        ))}
+        {postages &&
+          postages.map((postage) => (
+            <TableRow key={postage.id}>
+              <TableCell className="font-medium">
+                {postage.fromP.location}
+              </TableCell>
+              <TableCell>{postage.toP.location}</TableCell>
+              <TableCell>{postage.status}</TableCell>
+              <TableCell>{postage.price.toString()}</TableCell>
+              <TableCell>{postage.reward.toString()}</TableCell>
+              <TableCell className="text-right">
+                <button>asd</button>
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );
