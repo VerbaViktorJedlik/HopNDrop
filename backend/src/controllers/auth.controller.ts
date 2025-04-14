@@ -1,4 +1,4 @@
-import { AuthResponse, PublicUser } from "@common";
+import { AuthResponse, PublicSelf, PublicUser } from "@common";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import { prisma } from "../main";
@@ -154,6 +154,23 @@ export class AuthController {
             return decoded.user;
         } catch (error) {
             return undefined;
+        }
+    }
+
+    static async validateToken(req: Request, res:Response): Promise<void>{
+        const token = req.headers.authorization?.split(" ").pop()
+        if (!token){
+            res.status(400).json({result: "Error",msg: "No token sent"})
+            return
+        }
+        try {
+            const decoded: JWTDecode = jwt.verify(token, jwtSecret) as JWTDecode;
+
+            res.status(200).json("Success")
+            return 
+        } catch (error) {
+            res.status(400).json("Error")
+            return 
         }
     }
 }

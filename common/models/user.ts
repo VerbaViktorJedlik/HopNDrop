@@ -12,3 +12,6 @@ export type AuthResponse = {
     self: PublicSelf,
     result: "Success"
 } | {result: "Error", msg: string}
+
+
+export type TokenVerifyResponse = "Success" | "Error"
