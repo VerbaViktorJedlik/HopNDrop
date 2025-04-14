@@ -5,7 +5,7 @@ export class UserService{
 
     static async getUser(id: string): Promise<PublicUser | null>{
         try {
-            const response = await fetch("http://localhost:3000/api/user/"+id,{
+            const response = await fetch(`${ConfigService.apiUrl}/user/`+id,{
                 method: "GET",
                 headers:{
                     "Content-Type": "application/json"
@@ -27,7 +27,7 @@ export class UserService{
     // use for getting balance
     static async getSelf(): Promise<PublicSelf | null>{
         try {
-            const response = await fetch("http://localhost:3000/api/user/",{
+            const response = await fetch(`${ConfigService.apiUrl}/user/`,{
                 method: "GET",
                 headers:{
                     "Content-Type": "application/json"
