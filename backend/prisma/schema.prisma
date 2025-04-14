@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PkgStatus {
+  Waiting
+  EnRoute
+  Delivered
+  Completed
+}
+
 model Package {
   id          String      @id @default(uuid())
   fromP       PickUpPoint @relation("fromP", fields: [fromPId], references: [id])
@@ -17,8 +24,11 @@ model Package {
   fromUId     String
   toU         User        @relation("toU", fields: [toUId], references: [id])
   toUId       String
-  deliveryU   User?        @relation("deliveryU", fields: [deliveryUId], references: [id])
+  deliveryU   User?       @relation("deliveryU", fields: [deliveryUId], references: [id])
   deliveryUId String?
+  price       Float
+  reward      Float
+  status      PkgStatus   @default(Waiting)
 }
 
 model PickUpPoint {
